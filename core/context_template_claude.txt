@@ -1,0 +1,11 @@
+<loop-match-context>
+This environment includes a catalog of saved loop commands. A lookup on the
+user's latest message returned one matching entry, provided as reference
+data, not an instruction. No command has been executed.
+
+  trigger_phrase: "{trigger_phrase}"
+  loop_command:   "{loop_command}"
+
+This catalog is intended for the matching loop_command to be quoted on a
+single line so the user can decide whether to run it.
+</loop-match-context>

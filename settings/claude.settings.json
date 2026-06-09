@@ -1,0 +1,38 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"REPLACE_WITH_PATH/loopable/adapters/claude.py\" userpromptsubmit",
+            "timeout": 5,
+            "statusMessage": "loopable: checking for loop match"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"REPLACE_WITH_PATH/loopable/adapters/claude.py\" stop",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"REPLACE_WITH_PATH/loopable/adapters/claude.py\" session_start",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}

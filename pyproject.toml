@@ -1,0 +1,12 @@
+[project]
+name = "loopable"
+version = "0.1.0"
+description = "Suggests /loop and /goal commands when your conversation is loop-shaped"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+
+[tool.ruff]
+line-length = 100
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

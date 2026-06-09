@@ -1,0 +1,135 @@
+{
+  "entries": [
+    {
+      "command": {
+        "claude": "/loop 10m run `gh pr checks`; if all pass say it is ready to merge; if any fail summarize which and why"
+      },
+      "exclude": [
+        "do not"
+      ],
+      "id": "babysit-pr",
+      "intent": "poll-interval",
+      "min_confidence": 1,
+      "triggers": [
+        "watch the pr",
+        "babysit the pr",
+        "keep checking the pr",
+        "watch ci",
+        "keep checking ci"
+      ]
+    },
+    {
+      "command": {
+        "claude": "/goal the production build exits 0, fix errors until it succeeds, stop after 10 turns",
+        "codex": "/goal the production build exits 0, fix errors until it succeeds, stop after 10 turns"
+      },
+      "exclude": [
+        "do not"
+      ],
+      "id": "build-green",
+      "intent": "verify-until-green",
+      "min_confidence": 1,
+      "triggers": [
+        "build keeps failing",
+        "build is broken",
+        "fix the build",
+        "until the build passes"
+      ]
+    },
+    {
+      "command": {
+        "claude": "/goal test coverage is at least 80% with all tests passing, stop after 12 turns",
+        "codex": "/goal test coverage is at least 80% with all tests passing, stop after 12 turns"
+      },
+      "exclude": [
+        "do not"
+      ],
+      "id": "coverage-target",
+      "intent": "verify-until-green",
+      "min_confidence": 1,
+      "triggers": [
+        "until coverage",
+        "coverage to 80",
+        "reach 80% coverage",
+        "raise the coverage"
+      ]
+    },
+    {
+      "command": {
+        "claude": "/goal all database migrations apply cleanly, stop after 6 turns",
+        "codex": "/goal all database migrations apply cleanly, stop after 6 turns"
+      },
+      "exclude": [
+        "do not"
+      ],
+      "id": "db-migrations",
+      "intent": "verify-until-green",
+      "min_confidence": 1,
+      "triggers": [
+        "migrations apply",
+        "migration keeps failing",
+        "migrations keep failing"
+      ]
+    },
+    {
+      "command": {
+        "claude": "/goal all tests pass and lint is clean, stop after 20 turns",
+        "codex": "/goal all tests pass and lint is clean, stop after 20 turns"
+      },
+      "exclude": [
+        "do not",
+        "don't keep",
+        "stop running"
+      ],
+      "id": "fix-tests-lint",
+      "intent": "verify-until-green",
+      "min_confidence": 1,
+      "triggers": [
+        "tests keep flaking",
+        "tests are flaky",
+        "keep failing",
+        "keeps failing",
+        "until tests pass",
+        "until the tests pass",
+        "make the tests pass"
+      ]
+    },
+    {
+      "command": {
+        "claude": "/goal every call site is migrated, all tests pass, and typecheck is clean, stop after 30 turns",
+        "codex": "/goal every call site is migrated, all tests pass, and typecheck is clean, stop after 30 turns"
+      },
+      "exclude": [
+        "do not"
+      ],
+      "id": "migrate-api",
+      "intent": "verify-until-green",
+      "min_confidence": 1,
+      "triggers": [
+        "migrate every call site",
+        "update all call sites",
+        "until everything compiles",
+        "migrate all imports"
+      ]
+    },
+    {
+      "command": {
+        "claude": "/loop 5m check the latest deployment status and report what changed"
+      },
+      "exclude": [
+        "do not"
+      ],
+      "id": "watch-deploy",
+      "intent": "poll-interval",
+      "min_confidence": 1,
+      "triggers": [
+        "check the deploy every",
+        "watch the deploy",
+        "keep checking the deploy",
+        "deployment status every"
+      ]
+    }
+  ],
+  "schema_version": 1,
+  "source": "seeded from github.com/serenakeyitan/awesome-agent-loops"
+}

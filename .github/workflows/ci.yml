@@ -1,0 +1,23 @@
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pytest ruff mypy
+      - name: catalog drift gate
+        run: |
+          python3 build/build_catalog.py
+          git diff --exit-code data/catalog.json
+      - run: python3 -m pytest tests/ -q
+      - run: ruff check core adapters build tests
+      - run: ruff format --check core adapters build tests
+      - run: mypy --strict core/suggest.py core/ctl.py

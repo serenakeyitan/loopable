@@ -1,0 +1,118 @@
+{
+  "source": "seeded from github.com/serenakeyitan/awesome-agent-loops",
+  "entries": [
+    {
+      "id": "fix-tests-lint",
+      "triggers": [
+        "tests keep flaking",
+        "tests are flaky",
+        "keep failing",
+        "keeps failing",
+        "until tests pass",
+        "until the tests pass",
+        "make the tests pass"
+      ],
+      "exclude": ["do not", "don't keep", "stop running"],
+      "intent": "verify-until-green",
+      "min_confidence": 1,
+      "command": {
+        "claude": "/goal all tests pass and lint is clean, stop after 20 turns",
+        "codex": "/goal all tests pass and lint is clean, stop after 20 turns"
+      }
+    },
+    {
+      "id": "build-green",
+      "triggers": [
+        "build keeps failing",
+        "build is broken",
+        "fix the build",
+        "until the build passes"
+      ],
+      "exclude": ["do not"],
+      "intent": "verify-until-green",
+      "min_confidence": 1,
+      "command": {
+        "claude": "/goal the production build exits 0, fix errors until it succeeds, stop after 10 turns",
+        "codex": "/goal the production build exits 0, fix errors until it succeeds, stop after 10 turns"
+      }
+    },
+    {
+      "id": "babysit-pr",
+      "triggers": [
+        "watch the pr",
+        "babysit the pr",
+        "keep checking the pr",
+        "watch ci",
+        "keep checking ci"
+      ],
+      "exclude": ["do not"],
+      "intent": "poll-interval",
+      "min_confidence": 1,
+      "command": {
+        "claude": "/loop 10m run `gh pr checks`; if all pass say it is ready to merge; if any fail summarize which and why"
+      }
+    },
+    {
+      "id": "watch-deploy",
+      "triggers": [
+        "check the deploy every",
+        "watch the deploy",
+        "keep checking the deploy",
+        "deployment status every"
+      ],
+      "exclude": ["do not"],
+      "intent": "poll-interval",
+      "min_confidence": 1,
+      "command": {
+        "claude": "/loop 5m check the latest deployment status and report what changed"
+      }
+    },
+    {
+      "id": "migrate-api",
+      "triggers": [
+        "migrate every call site",
+        "update all call sites",
+        "until everything compiles",
+        "migrate all imports"
+      ],
+      "exclude": ["do not"],
+      "intent": "verify-until-green",
+      "min_confidence": 1,
+      "command": {
+        "claude": "/goal every call site is migrated, all tests pass, and typecheck is clean, stop after 30 turns",
+        "codex": "/goal every call site is migrated, all tests pass, and typecheck is clean, stop after 30 turns"
+      }
+    },
+    {
+      "id": "coverage-target",
+      "triggers": [
+        "until coverage",
+        "coverage to 80",
+        "reach 80% coverage",
+        "raise the coverage"
+      ],
+      "exclude": ["do not"],
+      "intent": "verify-until-green",
+      "min_confidence": 1,
+      "command": {
+        "claude": "/goal test coverage is at least 80% with all tests passing, stop after 12 turns",
+        "codex": "/goal test coverage is at least 80% with all tests passing, stop after 12 turns"
+      }
+    },
+    {
+      "id": "db-migrations",
+      "triggers": [
+        "migrations apply",
+        "migration keeps failing",
+        "migrations keep failing"
+      ],
+      "exclude": ["do not"],
+      "intent": "verify-until-green",
+      "min_confidence": 1,
+      "command": {
+        "claude": "/goal all database migrations apply cleanly, stop after 6 turns",
+        "codex": "/goal all database migrations apply cleanly, stop after 6 turns"
+      }
+    }
+  ]
+}
