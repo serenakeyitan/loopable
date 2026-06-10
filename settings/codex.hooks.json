@@ -1,8 +1,8 @@
 {
   "UserPromptSubmit": [
-    { "command": ["python3", "REPLACE_WITH_PATH/loopable/adapters/codex.py"] }
+    { "command": ["python3", "$REPO/adapters/codex.py"] }
   ],
   "Stop": [
-    { "command": ["python3", "REPLACE_WITH_PATH/loopable/adapters/codex.py"] }
+    { "command": ["python3", "$REPO/adapters/codex.py"] }
   ]
 }
