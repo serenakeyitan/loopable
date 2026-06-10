@@ -12,7 +12,7 @@ Claude Code already ships the commands that kill repetitive work: `/goal` keeps 
 
 ## What loopable is
 
-A **hook** — two tiny scripts your agent host runs automatically around each message (`UserPromptSubmit` + `Stop`). On every message it keyword-matches your words against the catalog. On a hit, your agent surfaces the matching command:
+A **hook** — two tiny scripts your agent host runs automatically around each message (`UserPromptSubmit` + `Stop`). On every message it keyword-matches your words against the catalog, and it also notices when you're *already* looping by hand — a third "run it again", the same request three times. On a hit, your agent surfaces the matching command:
 
 ```
 you:     ugh, the tests keep flaking again
@@ -50,14 +50,17 @@ Then say something loop-shaped — *"the tests keep flaking"* — and watch.
 
 ```
 your message ──▶ hook ──▶ keyword match vs catalog ──▶ one factual note to the agent ──▶ agent suggests the command
+                    └──▶ retry pattern (2 "run it again"s in a row, or 3 similar messages) ──▶ agent phrases a /goal for it
 ```
+
+Repetition detection is deterministic too — token-hash similarity in local session state, no message text ever written to disk. The hook names the pattern; your agent, which already has the conversation, composes the actual `/goal`.
 
 Catalog source of truth is [`build/entries.json`](build/entries.json); `build_catalog.py` generates `data/catalog.json` (CI fails on drift). Codex entries never use `/loop` (Codex doesn't have it). Full architecture, invariants, and the prompt-injection-safe wording: [DESIGN.md](DESIGN.md).
 
 ## Dev
 
 ```
-python3 -m pytest tests/        # 28 tests
+python3 -m pytest tests/        # 38 tests
 ruff check . && mypy --strict core/suggest.py core/ctl.py
 ```
 

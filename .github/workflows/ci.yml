@@ -20,4 +20,4 @@ jobs:
       - run: python3 -m pytest tests/ -q
       - run: ruff check core adapters build tests
       - run: ruff format --check core adapters build tests
-      - run: mypy --strict core/suggest.py core/ctl.py
+      - run: mypy --strict core/suggest.py core/ctl.py core/repetition.py

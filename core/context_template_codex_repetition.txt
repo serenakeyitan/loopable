@@ -1,0 +1,1 @@
+loopable: recent messages look like manual retries ({signal}). One /goal with an explicit success condition and a turn cap could replace them, e.g. /goal the failing step succeeds and is verified, stop after 10 turns

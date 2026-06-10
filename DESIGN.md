@@ -54,6 +54,15 @@ UserPromptSubmit + Stop  UserPromptSubmit + Stop
 Input: `{prompt, last_assistant_message, cwd, platform, session_id}` (adapters normalize host payloads).
 Logic: lowercase → strip quoted/backticked/code spans (mentions are not work; found live when the Stop hook matched the assistant's own quoted example) → count distinct trigger hits per entry → drop on any `exclude` hit, `hits < min_confidence`, missing `command[platform]`, message starting with a slash command → rank by trigger specificity, tie-break by id → session dedupe → emit ≤1 suggestion. Always exit 0. Called in-process (no subprocess on the prompt path).
 
+### Repetition trigger
+
+The catalog answers WHAT loop to suggest; triggers answer WHEN. Keywords are the fast path; `core/repetition.py` adds the higher-precision behavioral trigger: the user is visibly re-running the same task by hand. Two deterministic signals, prompt path only (assistant Stop-hook text is not evidence the user is retrying):
+
+- **retry chain** — a short retry-vocabulary message ("run it again", "still failing", "还是不行") immediately after another one; long messages containing "again" are new asks.
+- **similar messages** — token-set Jaccard ≥ 0.6 against ≥ 2 of the last 6 messages (each ≥ 4 tokens).
+
+Catalog match wins when both would fire. The injected text names the pattern but no command — the host model already has the conversation, so it composes the `/goal` success condition; the hook stays content-blind. State (`recent-<session_id>.json`) stores only per-message token hashes + a retry flag, never prompt text. Dedupe id `repetition`, once per session, same mute/TTL machinery.
+
 ### Injected text
 
 Claude (model-visible):

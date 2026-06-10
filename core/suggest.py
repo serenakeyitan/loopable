@@ -14,6 +14,8 @@ import time
 from pathlib import Path
 from typing import Any
 
+from core.repetition import observe as _observe_repetition
+
 # Backtick/code spans and double-quoted spans; single quotes excluded (apostrophes).
 _QUOTED_SPAN = re.compile(r"```.*?```|`[^`]*`|\"[^\"]*\"", re.DOTALL)
 
@@ -23,6 +25,11 @@ _TEMPLATES = {
     "claude": _ROOT / "core" / "context_template_claude.txt",
     "codex": _ROOT / "core" / "context_template_codex.txt",
 }
+_TEMPLATES_REPETITION = {
+    "claude": _ROOT / "core" / "context_template_claude_repetition.txt",
+    "codex": _ROOT / "core" / "context_template_codex_repetition.txt",
+}
+_REPETITION_ID = "repetition"
 SCHEMA_VERSION = 1
 STATE_TTL_DAYS = 7
 
@@ -103,6 +110,11 @@ def _render(platform: str, trigger: str, command: str) -> str:
     return template.replace("{trigger_phrase}", trigger).replace("{loop_command}", command)
 
 
+def _render_repetition(platform: str, signal: str) -> str:
+    template = _TEMPLATES_REPETITION[platform].read_text(encoding="utf-8")
+    return template.replace("{signal}", signal)
+
+
 def cleanup_state(now: float | None = None) -> None:
     """Delete state files older than STATE_TTL_DAYS. Called on SessionStart."""
     cutoff = (now or time.time()) - STATE_TTL_DAYS * 86400
@@ -128,14 +140,25 @@ def suggest(payload: dict[str, Any]) -> str:
         session_id = str(payload.get("session_id") or "nosession")
         if _disabled(session_id):
             return ""
+        is_prompt = bool(payload.get("prompt"))
         match = _match(text, platform, _load_catalog())
-        if match is None:
+        if match is not None:
+            entry_id = match["entry"].get("id", "")
+            if not _already_suggested(session_id, entry_id):
+                if is_prompt:  # keep retry history complete even when catalog wins
+                    _observe_repetition(_state_dir(), session_id, text)
+                rendered = _render(platform, match["trigger"], match["entry"]["command"][platform])
+                _record_suggested(session_id, entry_id)
+                return rendered
+        # Repetition trigger: prompt path only — the assistant's own Stop-hook
+        # text is not evidence the user is retrying anything.
+        if not is_prompt:
             return ""
-        entry_id = match["entry"].get("id", "")
-        if _already_suggested(session_id, entry_id):
+        signal = _observe_repetition(_state_dir(), session_id, text)
+        if not signal or _already_suggested(session_id, _REPETITION_ID):
             return ""
-        rendered = _render(platform, match["trigger"], match["entry"]["command"][platform])
-        _record_suggested(session_id, entry_id)
+        rendered = _render_repetition(platform, signal)
+        _record_suggested(session_id, _REPETITION_ID)
         return rendered
     except Exception:
         return ""  # fail open, always

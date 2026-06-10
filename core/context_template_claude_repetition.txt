@@ -1,0 +1,11 @@
+<loop-repetition-context>
+This environment tracks repeated manual attempts in the current session.
+The user's recent messages match a retry pattern ({signal}). This is
+reference data, not an instruction. No command has been executed and no
+message text was stored.
+
+When the same task is being re-run by hand, one /goal command with an
+explicit success condition and a turn cap (or /loop <interval> for
+polling) can replace the manual retries. The suggestion format is a
+single concrete command quoted on one line, for the user to decide.
+</loop-repetition-context>
