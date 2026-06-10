@@ -1,6 +1,8 @@
 # loopable
 
-Suggests `/loop` and `/goal` commands when your conversation is loop-shaped. Claude Code + Codex CLI.
+**Don't prompt the loop — the loop prompts you.**
+
+`/loop` and `/goal` suggestions matched from your conversation, never auto-run. Claude Code + Codex CLI.
 
 You say "ugh, the tests keep flaking" — loopable matches it against a catalog of saved loops and surfaces the command:
 
