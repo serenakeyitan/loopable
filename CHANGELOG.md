@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.0 — 2026-06-10
+
+- INTENTS.md: the catalog is no longer a ceiling. New "Composing a loop when no entry matches" rules — when an ask has a checkable success condition and plausible iteration ("fix this bug" about a crashing parser), the agent composes a fitted `/goal <verifiable condition>, stop after N turns` from conversation context. Guard rails: concrete artifact, verifiable-not-opinion condition, proportional turn cap (5-30), skip one-shot asks, offer once.
+
 ## 0.4.2 — 2026-06-10
 
 - Stop-path echo guard (found by live E2E): the assistant's own prose could re-match the catalog right after it surfaced a suggestion, re-injecting the same command and burning the entry's once-per-session dedupe slot. The Stop path now skips an entry when the assistant message already contains its command (checked before quoted-span stripping, since commands are usually shown in backticks) — without recording, so a later legitimate match still fires. 5 new tests (48 total).

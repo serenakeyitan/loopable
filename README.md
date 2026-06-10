@@ -54,7 +54,7 @@ your message ──▶ hook ──▶ keyword match vs catalog ──▶ one fac
                     └──▶ retry pattern (2 "run it again"s in a row, or 3 similar messages) ──▶ agent phrases a /goal for it
 ```
 
-Three layers, cheapest-first. The keyword and retry detectors are deterministic (token-hash similarity in local session state, no message text ever written to disk, no LLM call). The semantic layer costs nothing extra either: [INTENTS.md](INTENTS.md) — plain-language rules, human-editable — is injected once at session start and the agent you're already talking to does the fuzzy matching, so *"测试又挂了"* works as well as *"the tests keep flaking"*.
+Three layers, cheapest-first. The keyword and retry detectors are deterministic (token-hash similarity in local session state, no message text ever written to disk, no LLM call). The semantic layer costs nothing extra either: [INTENTS.md](INTENTS.md) — plain-language rules, human-editable — is injected once at session start and the agent you're already talking to does the fuzzy matching, so *"测试又挂了"* works as well as *"the tests keep flaking"*. And the catalog isn't a ceiling: when no saved entry fits but the ask has a checkable success condition (*"fix this bug"* about a crashing parser), the rules tell the agent to compose a fitted `/goal` from the conversation context itself.
 
 Catalog source of truth is [`build/entries.json`](build/entries.json); `build_catalog.py` generates `data/catalog.json` (CI fails on drift). Codex entries never use `/loop` (Codex doesn't have it). Full architecture, invariants, and the prompt-injection-safe wording: [DESIGN.md](DESIGN.md).
 
