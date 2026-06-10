@@ -52,7 +52,7 @@ UserPromptSubmit + Stop  UserPromptSubmit + Stop
 ### Matcher
 
 Input: `{prompt, last_assistant_message, cwd, platform, session_id}` (adapters normalize host payloads).
-Logic: lowercase → count distinct trigger hits per entry → drop on any `exclude` hit, `hits < min_confidence`, missing `command[platform]`, message starting with a slash command → rank by trigger specificity, tie-break by id → session dedupe → emit ≤1 suggestion. Always exit 0. Called in-process (no subprocess on the prompt path).
+Logic: lowercase → strip quoted/backticked/code spans (mentions are not work; found live when the Stop hook matched the assistant's own quoted example) → count distinct trigger hits per entry → drop on any `exclude` hit, `hits < min_confidence`, missing `command[platform]`, message starting with a slash command → rank by trigger specificity, tie-break by id → session dedupe → emit ≤1 suggestion. Always exit 0. Called in-process (no subprocess on the prompt path).
 
 ### Injected text
 

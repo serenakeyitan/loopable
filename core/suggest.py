@@ -9,9 +9,13 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import time
 from pathlib import Path
 from typing import Any
+
+# Backtick/code spans and double-quoted spans; single quotes excluded (apostrophes).
+_QUOTED_SPAN = re.compile(r"```.*?```|`[^`]*`|\"[^\"]*\"", re.DOTALL)
 
 _ROOT = Path(__file__).resolve().parent.parent
 _CATALOG = _ROOT / "data" / "catalog.json"
@@ -118,6 +122,9 @@ def suggest(payload: dict[str, Any]) -> str:
         text = (payload.get("prompt") or payload.get("last_assistant_message") or "").lower()
         if not text.strip() or text.strip().startswith("/"):
             return ""
+        # Quoted/backticked spans are mentions, not work being done. Found live:
+        # the Stop hook matched the assistant's own example '"tests keep flaking"'.
+        text = _QUOTED_SPAN.sub(" ", text)
         session_id = str(payload.get("session_id") or "nosession")
         if _disabled(session_id):
             return ""

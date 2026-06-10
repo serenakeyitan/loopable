@@ -75,3 +75,20 @@ def test_codex_template_shape():
     out = suggest(_payload("the tests keep flaking", platform="codex"))
     assert out.startswith("loopable:")
     assert "<" not in out
+
+
+def test_quoted_mention_does_not_fire():
+    # Found live: Stop hook matched the assistant's own quoted example.
+    assert suggest(_payload('type something like "ugh the tests keep flaking"')) == ""
+
+
+def test_backticked_mention_does_not_fire():
+    assert suggest(_payload("the phrase `tests keep flaking` is a trigger")) == ""
+
+
+def test_code_block_mention_does_not_fire():
+    assert suggest(_payload("example:\n```\ntests keep flaking\n```\nsee?")) == ""
+
+
+def test_unquoted_still_fires():
+    assert "/goal all tests pass" in suggest(_payload("the tests keep flaking again"))
