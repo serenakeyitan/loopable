@@ -147,25 +147,32 @@ def suggest(payload: dict[str, Any]) -> str:
         platform = payload.get("platform", "")
         if platform not in _TEMPLATES:
             return ""
-        text = (payload.get("prompt") or payload.get("last_assistant_message") or "").lower()
-        if not text.strip() or text.strip().startswith("/"):
+        raw = (payload.get("prompt") or payload.get("last_assistant_message") or "").lower()
+        if not raw.strip() or raw.strip().startswith("/"):
             return ""
         # Quoted/backticked spans are mentions, not work being done. Found live:
         # the Stop hook matched the assistant's own example '"tests keep flaking"'.
-        text = _QUOTED_SPAN.sub(" ", text)
+        text = _QUOTED_SPAN.sub(" ", raw)
         session_id = str(payload.get("session_id") or "nosession")
         if _disabled(session_id):
             return ""
         is_prompt = bool(payload.get("prompt"))
         match = _match(text, platform, _load_catalog())
         if match is not None:
-            entry_id = match["entry"].get("id", "")
-            if not _already_suggested(session_id, entry_id):
-                if is_prompt:  # keep retry history complete even when catalog wins
-                    _observe_repetition(_state_dir(), session_id, text)
-                rendered = _render(platform, match["trigger"], match["entry"]["command"][platform])
-                _record_suggested(session_id, entry_id)
-                return rendered
+            command = match["entry"]["command"][platform]
+            # Stop-path echo guard (found live 2026-06-10): the assistant's own
+            # prose can re-match the catalog right after it surfaced the command.
+            # Checked against `raw` — commands are usually shown in backticks,
+            # which the span-stripper removes. Skipping without recording keeps
+            # the dedupe slot for a future legitimate match.
+            if is_prompt or command.lower() not in raw:
+                entry_id = match["entry"].get("id", "")
+                if not _already_suggested(session_id, entry_id):
+                    if is_prompt:  # keep retry history complete even when catalog wins
+                        _observe_repetition(_state_dir(), session_id, text)
+                    rendered = _render(platform, match["trigger"], command)
+                    _record_suggested(session_id, entry_id)
+                    return rendered
         # Repetition trigger: prompt path only — the assistant's own Stop-hook
         # text is not evidence the user is retrying anything.
         if not is_prompt:

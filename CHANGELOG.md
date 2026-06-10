@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.2 — 2026-06-10
+
+- Stop-path echo guard (found by live E2E): the assistant's own prose could re-match the catalog right after it surfaced a suggestion, re-injecting the same command and burning the entry's once-per-session dedupe slot. The Stop path now skips an entry when the assistant message already contains its command (checked before quoted-span stripping, since commands are usually shown in backticks) — without recording, so a later legitimate match still fires. 5 new tests (48 total).
+
 ## 0.4.1 — 2026-06-10
 
 - Fix Codex install (found by real-session E2E): hooks belong in `~/.codex/config.toml` `[[hooks.*]]` tables, and untrusted user-layer hooks are discovered but *silently skipped* — ONBOARDING now covers headless trust via `[hooks.state]` + app-server `hooks/list`, the `/hooks` interactive path, and warns that hooks.json+config.toml double-wiring runs every hook twice. `settings/codex.hooks.json` → `settings/codex.config.toml`. DESIGN corrected: in `codex exec` the suggestion is a model-visible developer message, not transcript-visible.
