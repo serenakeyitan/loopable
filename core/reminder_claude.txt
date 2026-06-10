@@ -1,0 +1,8 @@
+<loopable-rules-reminder>
+The loopable rules injected at session start still apply: when a moment is
+loop-shaped — a verifiable end state needing fix-verify cycles, something
+to watch on an interval, or a manual retry pattern in the recent
+conversation — offer one fitted /goal or /loop command on a single line
+for the user to decide. Offer each loop at most once per session; when
+unsure, stay quiet.
+</loopable-rules-reminder>

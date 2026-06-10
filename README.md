@@ -1,8 +1,8 @@
 # loopable
 
-**`/loop` and `/goal` suggestions matched from your conversation — never auto-run.**
+**Rules of judgment for `/loop` and `/goal`, delivered into your agent's context — the agent judges, you decide, nothing auto-runs.**
 
-The librarian for [**awesome-agent-loops**](https://github.com/serenakeyitan/awesome-agent-loops), the library of copy-paste `/loop`, `/goal`, and `/schedule` prompts these suggestions come from.
+The librarian for [**awesome-agent-loops**](https://github.com/serenakeyitan/awesome-agent-loops), the library of copy-paste `/loop`, `/goal`, and `/schedule` prompts the rules carry with them.
 
 ### check out my latest work, and run `/loop` in [first-tree](https://github.com/agent-team-foundation/first-tree) free :D
 
@@ -12,18 +12,18 @@ Claude Code already ships the commands that kill repetitive work: `/goal` keeps 
 
 ## What loopable is
 
-A **hook** — two tiny scripts your agent host runs automatically around each message (`UserPromptSubmit` + `Stop`). On every message it keyword-matches your words against the catalog, and it also notices when you're *already* looping by hand — a third "run it again", the same request three times. On a hit, your agent surfaces the matching command:
+A **hook** that delivers [RULES.md](RULES.md) — plain-language rules for judging when a moment is loop-shaped and what single command to offer — into each session's context. There is no keyword list and no matcher: the agent you're already talking to reads the rules and judges every message itself, so *"测试又挂了"*, *"make sure it goes green"*, and a third *"run it again"* all count, in any phrasing, in any language.
 
 ```
-you:     ugh, the tests keep flaking again
-claude:  that matches a saved loop — you can run:
+you:     测试老是挂，烦死了
+claude:  that's loop-shaped — you can run:
          /goal all tests pass and lint is clean, stop after 20 turns
 ```
 
 - **Never auto-runs.** Hooks physically cannot trigger slash commands; you always press enter yourself.
-- **Deterministic.** Plain keyword match against `data/catalog.json` — no LLM call, zero latency, zero cost.
+- **Agentic, not mechanical.** The hook ships judgment rules, not yes/no answers. Code decides nothing about your words.
 - **Fail-open.** Any error exits silent; it can never block or eat a prompt.
-- **Not naggy.** Fires once per loop per session; quoted/backticked mentions don't trigger it.
+- **Not naggy.** The rules themselves carry the etiquette: offer once per loop per session, stay quiet when unsure.
 
 ## Install
 
@@ -35,7 +35,7 @@ clone https://github.com/serenakeyitan/loopable and follow its ONBOARDING.md to 
 
 Your agent reads [ONBOARDING.md](ONBOARDING.md) and wires the hooks itself — it merges your settings (never overwrites), validates, and tells you the one activation step (`/hooks` on Claude; trust-once via `/hooks` on Codex). Prefer doing it by hand? Every manual step is in the same file.
 
-Then say something loop-shaped — *"the tests keep flaking"* — and watch.
+Then say something loop-shaped — any phrasing — and watch.
 
 ## Control
 
@@ -49,19 +49,19 @@ Then say something loop-shaped — *"the tests keep flaking"* — and watch.
 ## How it works
 
 ```
-session start ──▶ hook ──▶ injects INTENTS.md ──▶ agent matches intent semantically (any language, any phrasing)
-your message ──▶ hook ──▶ keyword match vs catalog ──▶ one factual note to the agent ──▶ agent suggests the command
-                    └──▶ retry pattern (2 "run it again"s in a row, or 3 similar messages) ──▶ agent phrases a /goal for it
+session start ──▶ hook injects RULES.md ──▶ the agent judges every message itself
+every ~20 messages ──▶ hook re-injects a short reminder (delivery policy — still no judgment in code)
+loop-shaped moment ──▶ agent offers one fitted /goal or /loop on a single line ──▶ you decide
 ```
 
-Three layers, cheapest-first. The keyword and retry detectors are deterministic (token-hash similarity in local session state, no message text ever written to disk, no LLM call). The semantic layer costs nothing extra either: [INTENTS.md](INTENTS.md) — plain-language rules, human-editable — is injected once at session start and the agent you're already talking to does the fuzzy matching, so *"测试又挂了"* works as well as *"the tests keep flaking"*. And the catalog isn't a ceiling: when no saved entry fits but the ask has a checkable success condition (*"fix this bug"* about a crashing parser), the rules tell the agent to compose a fitted `/goal` from the conversation context itself.
+The code's only decisions are delivery decisions: has this session got the rules yet, is a reminder due, is loopable muted. Codex has no session-start hook event, so there the rules digest rides the first message of each session instead. The rules include a reference library of proven loops (seeded from awesome-agent-loops) and composition guard rails for everything the library doesn't cover — the agent names *your* failing artifact in the success condition rather than reciting a canned phrase.
 
-Catalog source of truth is [`build/entries.json`](build/entries.json); `build_catalog.py` generates `data/catalog.json` (CI fails on drift). Codex entries never use `/loop` (Codex doesn't have it). Full architecture, invariants, and the prompt-injection-safe wording: [DESIGN.md](DESIGN.md).
+Full architecture, the v2 pivot rationale (why the keyword matcher died), and the prompt-injection-safe wording: [DESIGN.md](DESIGN.md).
 
 ## Dev
 
 ```
-python3 -m pytest tests/        # 38 tests
+python3 -m pytest tests/        # 20 tests: delivery mechanics + rules content gates
 ruff check . && mypy --strict core/suggest.py core/ctl.py
 ```
 

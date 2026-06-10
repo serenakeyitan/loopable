@@ -1,7 +1,10 @@
 """Claude Code adapter. Wire in settings.json (see settings/claude.settings.json).
 
 Modes: userpromptsubmit | stop | session_start
-Every path exits 0 with empty output on error (DESIGN: fail open, never block a prompt).
+session_start injects RULES.md; userpromptsubmit injects it for sessions
+SessionStart never saw (resumed/pre-install) and a short reminder every
+~20 messages; stop is a no-op kept for backward-compatible installs.
+Every path exits 0 with empty output on error (DESIGN: fail open).
 """
 
 from __future__ import annotations
@@ -13,25 +16,7 @@ from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from core.suggest import cleanup_state, session_context, suggest  # noqa: E402
-
-
-def _last_assistant_message(transcript_path: str) -> str:
-    try:
-        lines = Path(transcript_path).read_text(encoding="utf-8").splitlines()
-        for line in reversed(lines[-200:]):
-            try:
-                rec: dict[str, Any] = json.loads(line)
-            except Exception:
-                continue
-            if rec.get("type") == "assistant":
-                content = rec.get("message", {}).get("content", [])
-                texts = [b.get("text", "") for b in content if b.get("type") == "text"]
-                if texts:
-                    return "\n".join(texts)
-        return ""
-    except Exception:
-        return ""
+from core.suggest import cleanup_state, mark_injected, prompt_context, session_context  # noqa: E402
 
 
 def main() -> int:
@@ -39,8 +24,15 @@ def main() -> int:
         mode = sys.argv[1] if len(sys.argv) > 1 else "userpromptsubmit"
         if mode == "session_start":
             cleanup_state()
+            try:
+                payload: dict[str, Any] = json.load(sys.stdin)
+            except Exception:
+                payload = {}
             rules = session_context()
             if rules:
+                session_id = payload.get("session_id")
+                if session_id:
+                    mark_injected(str(session_id))
                 print(
                     json.dumps(
                         {
@@ -52,36 +44,18 @@ def main() -> int:
                     )
                 )
             return 0
-        payload: dict[str, Any] = json.load(sys.stdin)
-        base = {
-            "platform": "claude",
-            "session_id": payload.get("session_id"),
-            "cwd": payload.get("cwd", ""),
-        }
         if mode == "stop":
-            text = _last_assistant_message(payload.get("transcript_path", ""))
-            out = suggest({**base, "prompt": None, "last_assistant_message": text})
-            if out:
-                print(
-                    json.dumps(
-                        {
-                            "hookSpecificOutput": {
-                                "hookEventName": "Stop",
-                                "additionalContext": out,
-                            }
-                        }
-                    )
-                )
-        else:
-            out = suggest(
-                {
-                    **base,
-                    "prompt": payload.get("prompt", ""),
-                    "last_assistant_message": None,
-                }
-            )
-            if out:
-                print(out)
+            return 0  # v2: nothing to judge in code
+        payload = json.load(sys.stdin)
+        out = prompt_context(
+            {
+                "platform": "claude",
+                "session_id": payload.get("session_id"),
+                "prompt": payload.get("prompt", ""),
+            }
+        )
+        if out:
+            print(out)
         return 0
     except Exception:
         return 0

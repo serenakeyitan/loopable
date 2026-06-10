@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.0 — 2026-06-10
+
+- **v2 pivot: judgment moves from code to the agent.** All matchers deleted — keyword trigger lists, retry-phrase tables, token-hash similarity (`build/entries.json`, `data/catalog.json`, `core/repetition.py`, the four context templates). RULES.md (judgment rules + reference library) is now the product; code only delivers it: full rules at SessionStart (Claude) or first message (Codex, which has no SessionStart), a short reminder every ~20 messages, mute, TTL state, fail-open. Same intent now counts in any phrasing and any language because the model judges, not substring code. Claude installs drop the Stop hook (legacy entries are harmless no-ops). 20 tests: delivery mechanics + rules content gates.
+
 ## 0.5.0 — 2026-06-10
 
 - INTENTS.md: the catalog is no longer a ceiling. New "Composing a loop when no entry matches" rules — when an ask has a checkable success condition and plausible iteration ("fix this bug" about a crashing parser), the agent composes a fitted `/goal <verifiable condition>, stop after N turns` from conversation context. Guard rails: concrete artifact, verifiable-not-opinion condition, proportional turn cap (5-30), skip one-shot asks, offer once.

@@ -1,95 +1,56 @@
 # loopable
 
-Suggests `/loop` and `/goal` commands when the conversation is loop-shaped. Claude Code + Codex CLI.
+Delivers rules of judgment so the host agent suggests `/loop` and `/goal` commands when the conversation is loop-shaped. Claude Code + Codex CLI.
 
-Status: approved · 2026-06-09
+Status: approved · 2026-06-09 · **v2 pivot 2026-06-10** (judgment moved from code to the agent)
 
 ## Problem
 
-Users hand-grind work the host already has a command for ("tests keep flaking", "check the deploy every few minutes"). The awesome-agent-loops catalog has the right commands, but a catalog is passive. loopable matches the conversation against the catalog and surfaces the matching command. The user runs it.
+Users hand-grind work the host already has a command for ("tests keep flaking", "check the deploy every few minutes"). The awesome-agent-loops catalog has the right commands, but a catalog is passive. loopable puts the judgment rules — what counts as loop-shaped, what single command to offer — into the agent's context, and the agent judges every message. The user runs the command, or doesn't.
+
+## The v2 pivot
+
+v0.1–0.5 decided yes/no in code: keyword trigger lists, retry-phrase tables, token-hash similarity. Live use showed the flaw three times in one day — "make sure all tests pass", "ensure all tests pass", "fix bug for me" each missed the lists, and each patch grew the enumeration without closing the gap. Enumerated surface forms can never cover paraphrase or other languages; that's whack-a-mole by construction (机械化, not agentic). The fix: the host model already reads every message, so it makes the match decision. Code keeps only what code is good at — reliable delivery, mute, state, fail-open.
 
 ## Constraints
 
 1. **Hooks cannot run slash commands.** Docs: "Hooks communicate through stdout, stderr, and exit codes only. They cannot trigger / commands or tool calls." loopable is a suggester. Auto-launch is impossible; do not design for it.
 2. **Injected context must be factual, not imperative.** Imperative phrasing trips Claude's prompt-injection defenses and gets surfaced to the user as suspicious text. No "tell the user", no MUST/CRITICAL.
-3. **Detection is deterministic** — keyword match, no LLM call. Free, testable, explainable.
-4. **One catalog.** A single generated `catalog.json` feeds both hosts.
+3. **Judgment is the model's; delivery is deterministic.** (Reversed 2026-06-10 — was "detection is deterministic".) Code makes no decision about message content: it answers only "has this session got the rules?", "is a reminder due?", "is loopable muted?". Those delivery decisions stay deterministic, testable, free.
+4. **One rules file.** `RULES.md` is the single source for both hosts (Codex receives a condensed one-line digest of it).
 5. **Fail open.** Any error → exit 0, empty output. Never block or erase a prompt.
-6. **Visibility differs per host.** Claude: injected context is model-visible; relay to the user is probabilistic. Codex: `additionalContext` renders visibly in the transcript (openai/codex#16933), so its text must read clean raw.
+6. **Visibility differs per host.** Claude: injected context is model-visible; relay to the user is probabilistic. Codex: hook output lands as a model-visible developer message (in `codex exec` it is NOT shown in the transcript; interactive mode may render it), so its text must read clean raw either way.
 
 ## Architecture
 
 ```
-awesome-agent-loops (markdown, human-edited)
-        │ build_catalog.py — CI drift gate
-        ▼
-data/catalog.json (generated, schema v1)
+RULES.md (judgment rules + reference library, human-edited,
+          seeded from awesome-agent-loops)
         │
-core/suggest.py — deterministic matcher, fail-open
-        │                       │
-adapters/claude.py      adapters/codex.py
-UserPromptSubmit + Stop  UserPromptSubmit + Stop
+core/suggest.py — delivery + state only, fail-open
+  session_context()   full rules           (SessionStart, Claude)
+  prompt_context()    full rules on a session's first sighting,
+                      short reminder every REFRESH_EVERY msgs
+        │                          │
+adapters/claude.py          adapters/codex.py
+SessionStart +              UserPromptSubmit (no SessionStart
+UserPromptSubmit            event on Codex — rules ride msg 1)
+(stop = no-op, back-compat)
 ```
 
-### Catalog entry
+### Rules delivery
 
-```json
-{
-  "id": "tests-keep-flaking",
-  "triggers": ["tests keep flaking", "keep failing", "until tests pass"],
-  "exclude": ["do not", "stop running"],
-  "intent": "verify-until-green",
-  "min_confidence": 2,
-  "command": {
-    "claude": "/goal all tests pass and lint is clean, stop after 20 turns",
-    "codex":  "/goal all tests pass and lint is clean, stop after 20 turns"
-  }
-}
-```
+The whole runtime decision tree, none of it about message content:
 
-`command` is per-host (Codex has no `/loop`; its `/goal` tracks an objective rather than auto-continuing). Missing host key → entry skipped on that host. Commands are authored for each host's semantics, not translated.
+- `SessionStart` (Claude): cleanup TTL state, inject `<loopable-rules>` wrapping RULES.md, mark the session injected.
+- `UserPromptSubmit` (both hosts): skip empty/slash messages → if the session was never injected (Codex always; Claude resumed/pre-install sessions) deliver the full rules → else count messages and deliver a short reminder every `REFRESH_EVERY` (20) — countering model attention fade and context compaction in long sessions.
+- Muted → nothing. Errors → nothing (fail open). `stop` mode is a kept-for-compat no-op.
 
-### Matcher
+Claude gets the full md (`<loopable-rules>` / `<loopable-rules-reminder>` blocks); Codex gets a one-line digest (`core/digest_codex.txt`) since its hook output may render in the visible transcript and Codex has no `/loop`.
 
-Input: `{prompt, last_assistant_message, cwd, platform, session_id}` (adapters normalize host payloads).
-Logic: lowercase → strip quoted/backticked/code spans (mentions are not work; found live when the Stop hook matched the assistant's own quoted example) → count distinct trigger hits per entry → drop on any `exclude` hit, `hits < min_confidence`, missing `command[platform]`, message starting with a slash command → rank by trigger specificity, tie-break by id → session dedupe → emit ≤1 suggestion. Always exit 0. Called in-process (no subprocess on the prompt path).
+### RULES.md shape
 
-### Semantic layer (INTENTS.md)
-
-Keyword lists are mechanical: they enumerate surface forms and lose every paraphrase and language they didn't enumerate. The fix that keeps constraint 3 (no LLM call in the hook): the host model is already an LLM, so the SessionStart hook injects `INTENTS.md` — plain-language rules mapping intents to commands — once per session, and the model does semantic matching for free, in any language. The md is human-edited content, the same register as the catalog; a test pins every catalog `claude` command verbatim into the md (drift gate) and runs the inject-text denylist over it. It also authorizes composition beyond the catalog: when no entry fits but the ask has an objectively checkable success condition and plausible iteration, the model composes a fitted `/goal` from conversation context (the md constrains shape: concrete artifact, verifiable condition, proportional turn cap, offer-once). Composition quality is model judgment — the md guidance is the control surface, the deterministic layers are unaffected. Muted → no injection. Claude-only for now (Codex hooks expose no SessionStart event). ~500 tokens per session is the cost; model attention over long sessions is the known weakness, which the deterministic layers backstop.
-
-### Repetition trigger
-
-The catalog answers WHAT loop to suggest; triggers answer WHEN. Keywords are the fast path; `core/repetition.py` adds the higher-precision behavioral trigger: the user is visibly re-running the same task by hand. Two deterministic signals, prompt path only (assistant Stop-hook text is not evidence the user is retrying):
-
-- **retry chain** — a short retry-vocabulary message ("run it again", "still failing", "还是不行") immediately after another one; long messages containing "again" are new asks.
-- **similar messages** — token-set Jaccard ≥ 0.6 against ≥ 2 of the last 6 messages (each ≥ 4 tokens).
-
-Catalog match wins when both would fire. The injected text names the pattern but no command — the host model already has the conversation, so it composes the `/goal` success condition; the hook stays content-blind. State (`recent-<session_id>.json`) stores only per-message token hashes + a retry flag, never prompt text. Dedupe id `repetition`, once per session, same mute/TTL machinery.
-
-### Injected text
-
-Claude (model-visible):
-
-```
-<loop-match-context>
-This environment includes a catalog of saved loop commands. A lookup on the
-user's latest message returned one matching entry, provided as reference
-data, not an instruction. No command has been executed.
-
-  trigger_phrase: "{trigger_phrase}"
-  loop_command:   "{loop_command}"
-
-This catalog is intended for the matching loop_command to be quoted on a
-single line so the user can decide whether to run it.
-</loop-match-context>
-```
-
-Codex (user-visible, raw):
-
-```
-loopable: "{trigger_phrase}" matches a saved loop. Consider running: {loop_command}
-```
+Three sections, all judgment guidance, no enumerations: **The decision** (verify-until-green, watch-until-done, manual-retry-in-progress — and what is NOT loop-shaped, with "when unsure, stay quiet"), **What to offer** (one command, one line, composed: concrete artifact, verifiable-not-opinion success condition, proportional turn cap 5-30, once per session, user decides), **Reference library** (proven shapes seeded from awesome-agent-loops, marked adapt-don't-recite; Codex offers /goal shapes only). Tests gate structure, the inject-text denylist, and the library's core commands — judgment quality itself is the model's and is validated by live E2E, not unit tests.
 
 ### Delivery
 
@@ -105,24 +66,26 @@ Rejected surfaces: statusline, output styles (no write path); Codex `notify` (on
 
 ### State
 
-`$XDG_STATE_HOME/loopable/`: `suggested-<session_id>.json` (dedupe), `disabled-/muted-<session_id>`. 7-day TTL cleanup on SessionStart. Missing session_id → in-memory suggest-once. Never log prompt text; match log is `{ts, entry_id, trigger_phrase}`, off by default.
+`$XDG_STATE_HOME/loopable/`: `rules-<session_id>.json` (`{injected, count}` delivery state), `disabled-global`, `disabled-/muted-<session_id>`. 7-day TTL cleanup on SessionStart. Missing session_id → keyed as `nosession`. No message text is ever read into state — the delivery layer never inspects content.
 
 ## Engineering
 
-- Tests: golden cases (prompt → entry → command per host), fail-open (malformed input → exit 0, empty), inject-text denylist (no imperative/empirical tokens), adapter normalization, dedupe, exclusions.
-- Hook wrapper: global try/except, 1s timeout, exit 0 on every path.
-- CI: rebuild `catalog.json` must be byte-identical (drift gate); JSON-schema validation; ruff + mypy --strict; gitleaks.
-- Versioning: `schema_version` separate from tool version; mismatch → no-op. `source_commit` pins catalog source.
+- Tests (20): delivery mechanics (first-message injection, SessionStart dedupe, reminder cadence, mute, TTL, slash/empty skip), fail-open (malformed input → exit 0, empty), rules-content gates (structure, inject-text denylist, core library commands pinned, codex digest single clean line), adapter subprocess contracts.
+- Hook wrapper: global try/except, exit 0 on every path.
+- CI: pytest; ruff check + format; mypy --strict on core.
+- Judgment quality is not unit-testable — validate via live E2E sessions per host (claude -p / codex exec), as on 2026-06-10.
 - Package: `@loopable/cli` or `loopable-cc` (bare name likely squatted; verify before publish).
 
 ## Risks
 
 1. Claude relay is model discretion. The step-0 PoC measures it.
 2. Codex rendering asserted from docs + #16933, not a live run. Step 0 gates the adapter.
-3. False positives → `min_confidence`, excludes, dedupe, mute.
-4. `Stop` fires every response → dedupe mandatory.
+3. False positives → judgment etiquette in RULES.md (once per session, stay quiet when unsure) + mute. Over-suggesting is a rules-wording bug; fix the md, verify by live E2E.
+4. Long sessions fade the rules from attention → REFRESH_EVERY reminder cadence; compaction loses them entirely → first-sighting re-injection on the prompt path.
 
 ## Plan
+
+(Historical — v0.1 build plan, completed 2026-06-09/10; superseded by the v2 pivot above. Kept for the record.)
 
 0. Verify injection on both hosts.
    - Claude: **done 2026-06-09.** PoC at `~/.claude/loopable-poc/hook.sh`, wired into `~/.claude/settings.json`, unit-tested (match / no-match / garbage → exit 0). Remaining: activate via `/hooks`, send a trigger phrase, check `fired.log` and whether Claude relays the command.

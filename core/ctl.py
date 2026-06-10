@@ -6,13 +6,12 @@ hosts expose a session id to slash commands (DESIGN: control command v0.1).
 
 from __future__ import annotations
 
-import json
 import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from core.suggest import _CATALOG, _state_dir  # noqa: E402
+from core.suggest import _RULES, _state_dir  # noqa: E402
 
 
 def main() -> int:
@@ -28,10 +27,10 @@ def main() -> int:
         print("loopable: on")
     elif cmd == "status":
         try:
-            n = len(json.loads(_CATALOG.read_text(encoding="utf-8"))["entries"])
+            detail = f"rules {_RULES.stat().st_size} bytes"
         except Exception:
-            n = 0
-        print(f"loopable: {'off' if flag.exists() else 'on'} · {n} catalog entries")
+            detail = "rules missing"
+        print(f"loopable: {'off' if flag.exists() else 'on'} · {detail}")
     else:
         print(f"unknown subcommand: {cmd}", file=sys.stderr)
         return 1

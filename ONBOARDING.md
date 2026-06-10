@@ -1,8 +1,10 @@
 # ONBOARDING.md — agent install guide
 
-You are an AI coding agent. The user asked you to install **loopable**: two small
-hooks that suggest `/loop` and `/goal` commands when the user's message is
-loop-shaped. Follow these steps exactly. Show the user what you changed.
+You are an AI coding agent. The user asked you to install **loopable**: small
+hooks that deliver RULES.md — rules of judgment for spotting loop-shaped
+moments and offering one `/loop` or `/goal` command — into each session's
+context. The hooks decide nothing about content; the agent reading the rules
+does the judging. Follow these steps exactly. Show the user what you changed.
 
 ## Rules
 
@@ -25,16 +27,17 @@ git clone https://github.com/serenakeyitan/loopable ~/loopable   # or user's pre
 # if the directory already exists from a prior run: git -C ~/loopable pull
 cd ~/loopable
 python3 --version   # needs >= 3.10
-echo '{"session_id":"onboard","prompt":"the tests keep flaking","cwd":"/tmp"}' \
+echo '{"session_id":"onboard","prompt":"hello","cwd":"/tmp"}' \
   | python3 adapters/claude.py userpromptsubmit
 ```
 
-Expected: a `<loop-match-context>` block containing `/goal all tests pass and
-lint is clean`. Empty output or non-zero exit → stop and report.
+Expected: a `<loopable-rules>` block containing the contents of RULES.md.
+Empty output or non-zero exit → stop and report.
 
-Note: this test records a dedupe entry under
+Note: this test records delivery state under
 `${XDG_STATE_HOME:-~/.local/state}/loopable/` — repeating it with the **same**
-`session_id` is expectedly silent (suggestions fire once per loop per session).
+`session_id` is expectedly silent (the rules are delivered once per session,
+then refreshed as a short reminder every ~20 messages).
 
 ## Step 2 — detect hosts
 
@@ -46,7 +49,7 @@ Note: this test records a dedupe entry under
 
 Read `~/.claude/settings.json`. If the file is absent, create it as
 `{"hooks": {}}`. If it exists without a `hooks` object, add one. Then merge
-these three entries (append to each event's array; if an event key is absent,
+these two entries (append to each event's array; if an event key is absent,
 add it with a one-element array; apply the idempotency rule above). Replace
 `$REPO` with the absolute clone path:
 
@@ -58,10 +61,6 @@ add it with a one-element array; apply the idempotency rule above). Replace
         "command": "python3 $REPO/adapters/claude.py userpromptsubmit",
         "timeout": 5, "statusMessage": "loopable" } ] }
     ],
-    "Stop": [
-      { "hooks": [ { "type": "command",
-        "command": "python3 $REPO/adapters/claude.py stop", "timeout": 5 } ] }
-    ],
     "SessionStart": [
       { "hooks": [ { "type": "command",
         "command": "python3 $REPO/adapters/claude.py session_start", "timeout": 5 } ] }
@@ -71,11 +70,12 @@ add it with a one-element array; apply the idempotency rule above). Replace
 ```
 
 (`adapters/claude.py` takes a subcommand; `adapters/codex.py` in Step 4 takes none.
-The same three entries, pre-written, are in `settings/claude.settings.json`.)
+The same two entries, pre-written, are in `settings/claude.settings.json`. A
+`Stop` entry from a pre-v2 install is a harmless no-op — leave or remove it.)
 
 Validate: `python3 -c "import json;json.load(open('$HOME/.claude/settings.json'))"`.
 
-Show the user a short summary of what was appended (three entries), not a
+Show the user a short summary of what was appended (two entries), not a
 full-file dump.
 
 Install the control command — create `~/.claude/commands/` if missing and copy
@@ -112,12 +112,13 @@ command = "python3 $REPO/adapters/codex.py"
 Pipe-test the Codex adapter:
 
 ```bash
-echo '{"session_id":"onboard-codex","prompt":"the tests keep flaking"}' \
+echo '{"session_id":"onboard-codex","prompt":"hello"}' \
   | python3 $REPO/adapters/codex.py
 ```
 
-Expected (one line, no markup):
-`loopable: "tests keep flaking" matches a saved loop. Consider running: /goal all tests pass and lint is clean, stop after 20 turns`
+Expected: one line, no markup, starting with `loopable rules:` (the condensed
+rules digest — Codex has no SessionStart event, so the first message of each
+session carries the rules instead).
 
 ### Step 4b — trust (required; untrusted hooks are silently skipped)
 
@@ -153,18 +154,21 @@ Verify: re-run hooks/list and check both hooks show `trustStatus: "trusted"`
 
 1. Re-run the Step 1 pipe test **with a fresh session id**, e.g.
    `{"session_id":"onboard-verify", ...}`. (Reusing `"onboard"` is expectedly
-   silent — that's the once-per-session dedupe working, not a failure.)
+   silent — rules deliver once per session, not per message.)
 2. Tell the user, in one short block:
    - activation: `/hooks` (Claude) / trust via `/hooks` (Codex)
-   - live test: say **"the tests keep flaking"** → the agent should mention
-     `/goal all tests pass and lint is clean, stop after 20 turns`
-   - it fires once per loop per session; second mention stays silent
+   - live test: in a new session, describe something loop-shaped in ANY
+     phrasing or language — *"make sure the tests go green"*, *"测试老是挂"* —
+     and the agent (judging by RULES.md, not keywords) offers a fitted
+     `/goal` on one line
+   - the rules land once per session plus a short reminder every ~20 messages
    - mute: `python3 $REPO/core/ctl.py off` (or `/loopable off`)
 3. Do not run `/loop` or `/goal` yourself. Installation ends here.
 
 ## Uninstall
 
-1. Remove the three loopable entries from `~/.claude/settings.json`, and from
+1. Remove the two loopable entries (plus any legacy `Stop` entry) from
+   `~/.claude/settings.json`, and from
    `~/.codex/config.toml` the two `[[hooks.*]]` blocks plus their
    `[hooks.state."…"]` trust entries. Legacy installs may also have entries in
    `~/.codex/hooks.json` — remove those too (delete the file if loopable
