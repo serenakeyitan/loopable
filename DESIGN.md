@@ -54,6 +54,10 @@ UserPromptSubmit + Stop  UserPromptSubmit + Stop
 Input: `{prompt, last_assistant_message, cwd, platform, session_id}` (adapters normalize host payloads).
 Logic: lowercase → strip quoted/backticked/code spans (mentions are not work; found live when the Stop hook matched the assistant's own quoted example) → count distinct trigger hits per entry → drop on any `exclude` hit, `hits < min_confidence`, missing `command[platform]`, message starting with a slash command → rank by trigger specificity, tie-break by id → session dedupe → emit ≤1 suggestion. Always exit 0. Called in-process (no subprocess on the prompt path).
 
+### Semantic layer (INTENTS.md)
+
+Keyword lists are mechanical: they enumerate surface forms and lose every paraphrase and language they didn't enumerate. The fix that keeps constraint 3 (no LLM call in the hook): the host model is already an LLM, so the SessionStart hook injects `INTENTS.md` — plain-language rules mapping intents to commands — once per session, and the model does semantic matching for free, in any language. The md is human-edited content, the same register as the catalog; a test pins every catalog `claude` command verbatim into the md (drift gate) and runs the inject-text denylist over it. Muted → no injection. Claude-only for now (Codex hooks expose no SessionStart event). ~500 tokens per session is the cost; model attention over long sessions is the known weakness, which the deterministic layers backstop.
+
 ### Repetition trigger
 
 The catalog answers WHAT loop to suggest; triggers answer WHEN. Keywords are the fast path; `core/repetition.py` adds the higher-precision behavioral trigger: the user is visibly re-running the same task by hand. Two deterministic signals, prompt path only (assistant Stop-hook text is not evidence the user is retrying):

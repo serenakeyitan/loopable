@@ -13,7 +13,7 @@ from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from core.suggest import cleanup_state, suggest  # noqa: E402
+from core.suggest import cleanup_state, session_context, suggest  # noqa: E402
 
 
 def _last_assistant_message(transcript_path: str) -> str:
@@ -39,6 +39,18 @@ def main() -> int:
         mode = sys.argv[1] if len(sys.argv) > 1 else "userpromptsubmit"
         if mode == "session_start":
             cleanup_state()
+            rules = session_context()
+            if rules:
+                print(
+                    json.dumps(
+                        {
+                            "hookSpecificOutput": {
+                                "hookEventName": "SessionStart",
+                                "additionalContext": rules,
+                            }
+                        }
+                    )
+                )
             return 0
         payload: dict[str, Any] = json.load(sys.stdin)
         base = {

@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.0 — 2026-06-10
+
+- Semantic layer: `INTENTS.md` — plain-language intent→command rules, injected once per session by the Claude SessionStart hook. The host model matches meaning, not substrings, so any phrasing in any language works ("测试又挂了" ≙ "tests keep flaking"). Deterministic keyword + retry layers stay as the zero-cost floor. Tests pin md↔catalog consistency and the denylist; mute suppresses injection. 43 tests total.
+
 ## 0.3.0 — 2026-06-10
 
 - Repetition trigger (`core/repetition.py`): detects manual retry loops — two retry-style messages in a row ("run it again" → "still failing") or three similar messages per session (token-hash Jaccard ≥ 0.6). Deterministic, prompt-path only, no message text stored. Catalog match takes precedence; the injected note names the pattern and lets the host model compose the `/goal`. New templates pass the inject-text denylist; 10 new tests (38 total).

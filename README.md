@@ -49,11 +49,12 @@ Then say something loop-shaped — *"the tests keep flaking"* — and watch.
 ## How it works
 
 ```
+session start ──▶ hook ──▶ injects INTENTS.md ──▶ agent matches intent semantically (any language, any phrasing)
 your message ──▶ hook ──▶ keyword match vs catalog ──▶ one factual note to the agent ──▶ agent suggests the command
                     └──▶ retry pattern (2 "run it again"s in a row, or 3 similar messages) ──▶ agent phrases a /goal for it
 ```
 
-Repetition detection is deterministic too — token-hash similarity in local session state, no message text ever written to disk. The hook names the pattern; your agent, which already has the conversation, composes the actual `/goal`.
+Three layers, cheapest-first. The keyword and retry detectors are deterministic (token-hash similarity in local session state, no message text ever written to disk, no LLM call). The semantic layer costs nothing extra either: [INTENTS.md](INTENTS.md) — plain-language rules, human-editable — is injected once at session start and the agent you're already talking to does the fuzzy matching, so *"测试又挂了"* works as well as *"the tests keep flaking"*.
 
 Catalog source of truth is [`build/entries.json`](build/entries.json); `build_catalog.py` generates `data/catalog.json` (CI fails on drift). Codex entries never use `/loop` (Codex doesn't have it). Full architecture, invariants, and the prompt-injection-safe wording: [DESIGN.md](DESIGN.md).
 

@@ -115,6 +115,22 @@ def _render_repetition(platform: str, signal: str) -> str:
     return template.replace("{signal}", signal)
 
 
+def session_context() -> str:
+    """Natural-language rules doc injected at SessionStart (Claude only).
+
+    The deterministic matcher is the floor; the host model reading these
+    rules is the semantic layer — same intent, any language or phrasing.
+    Empty when muted or on any error (fail open).
+    """
+    try:
+        if (_state_dir() / "disabled-global").exists():
+            return ""
+        text = (_ROOT / "INTENTS.md").read_text(encoding="utf-8").strip()
+        return f"<loopable-rules>\n{text}\n</loopable-rules>"
+    except Exception:
+        return ""
+
+
 def cleanup_state(now: float | None = None) -> None:
     """Delete state files older than STATE_TTL_DAYS. Called on SessionStart."""
     cutoff = (now or time.time()) - STATE_TTL_DAYS * 86400

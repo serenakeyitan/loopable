@@ -70,7 +70,20 @@ def test_codex_userpromptsubmit(tmp_path):
     assert "/goal all tests pass" in r.stdout
 
 
-def test_claude_session_start_cleanup(tmp_path):
+def test_claude_session_start_injects_rules(tmp_path):
+    r = _run("claude.py", {}, args=["session_start"], state_dir=str(tmp_path))
+    assert r.returncode == 0
+    out = json.loads(r.stdout)
+    ctx = out["hookSpecificOutput"]["additionalContext"]
+    assert out["hookSpecificOutput"]["hookEventName"] == "SessionStart"
+    assert ctx.startswith("<loopable-rules>")
+    assert "/goal all tests pass" in ctx
+
+
+def test_claude_session_start_muted_is_silent(tmp_path):
+    state = tmp_path / "loopable"
+    state.mkdir(parents=True)
+    (state / "disabled-global").touch()
     r = _run("claude.py", {}, args=["session_start"], state_dir=str(tmp_path))
     assert r.returncode == 0
     assert r.stdout == ""
