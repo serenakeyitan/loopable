@@ -3,56 +3,61 @@
 **Don't prompt the loop — the loop prompts you.**
 ### check out my latest work, and run `/loop` in [first-tree](https://github.com/agent-team-foundation/first-tree) free :D
 
-`/loop` and `/goal` suggestions matched from your conversation, never auto-run. Claude Code + Codex CLI.
+> 📚 loopable is the librarian — [**awesome-agent-loops**](https://github.com/serenakeyitan/awesome-agent-loops) is the library: the curated collection of copy-paste `/loop`, `/goal`, and `/schedule` prompts these suggestions come from.
 
-> 📚 loopable is the librarian — [**awesome-agent-loops**](https://github.com/serenakeyitan/awesome-agent-loops) is the library: the curated collection of copy-paste `/loop`, `/goal`, and `/schedule` prompts these suggestions come from. Browse it to see every loop loopable can hand you, or contribute one and the catalog grows.
+## The pain
 
-You say "ugh, the tests keep flaking" — loopable matches it against a catalog of saved loops and surfaces the command:
+Claude Code already ships the commands that kill repetitive work: `/goal` keeps going until tests *actually* pass, `/loop` re-checks a PR every 10 minutes. The problem is remembering they exist **in the moment** — you're three "run it again"s deep before it occurs to you that a loop would have done this. The catalog of good loops is a page you have to go read; nobody does mid-task.
+
+## What loopable is
+
+A **hook** — two tiny scripts your agent host runs automatically around each message (`UserPromptSubmit` + `Stop`). On every message it keyword-matches your words against the catalog. On a hit, your agent surfaces the matching command:
 
 ```
-/goal all tests pass and lint is clean, stop after 20 turns
+you:     ugh, the tests keep flaking again
+claude:  that matches a saved loop — you can run:
+         /goal all tests pass and lint is clean, stop after 20 turns
 ```
 
-It never runs anything. Hooks cannot trigger slash commands; loopable is a suggester by construction. Detection is a deterministic keyword match — no LLM call, no latency, no cost. See [DESIGN.md](DESIGN.md).
+- **Never auto-runs.** Hooks physically cannot trigger slash commands; you always press enter yourself.
+- **Deterministic.** Plain keyword match against `data/catalog.json` — no LLM call, zero latency, zero cost.
+- **Fail-open.** Any error exits silent; it can never block or eat a prompt.
+- **Not naggy.** Fires once per loop per session; quoted/backticked mentions don't trigger it.
 
-## Install — Claude Code
+## Install
 
-1. Clone this repo.
-2. Merge [settings/claude.settings.json](settings/claude.settings.json) into `~/.claude/settings.json`, replacing `REPLACE_WITH_PATH` with the clone path.
-3. Run `/hooks` once (or restart) — hooks are snapshotted at session start.
+Paste this into Claude Code (or Codex):
 
-Suggestions are injected as model-visible context; Claude relays them in its reply.
+```
+clone https://github.com/serenakeyitan/loopable and follow its ONBOARDING.md to install it
+```
 
-## Install — Codex CLI
+Your agent reads [ONBOARDING.md](ONBOARDING.md) and wires the hooks itself — it merges your settings (never overwrites), validates, and tells you the one activation step (`/hooks` on Claude; trust-once via `/hooks` on Codex). Prefer doing it by hand? Every manual step is in the same file.
 
-1. Clone this repo.
-2. Merge [settings/codex.hooks.json](settings/codex.hooks.json) into `~/.codex/hooks.json`, replacing `REPLACE_WITH_PATH`.
-3. Trust the hook once via `/hooks` — non-managed Codex hooks are skipped until trusted.
-
-Codex renders the suggestion directly in the transcript as a one-liner.
+Then say something loop-shaped — *"the tests keep flaking"* — and watch.
 
 ## Control
 
 ```
-python3 core/ctl.py status|on|off
+/loopable            status
+/loopable off | on   mute / unmute everywhere
 ```
 
-`/loopable` (commands/loopable.md) wraps this in-session. Per-session mute is deferred until hosts expose a session id to slash commands. Suggestions fire at most once per entry per session.
+(or `python3 core/ctl.py status|on|off` directly)
 
-## Catalog
+## How it works
 
-`build/entries.json` is canonical (seeded from [awesome-agent-loops](https://github.com/serenakeyitan/awesome-agent-loops)). `python3 build/build_catalog.py` regenerates `data/catalog.json`; CI fails if the committed file drifts. Codex entries never use `/loop` (Codex doesn't have it) and its `/goal` tracks an objective rather than auto-continuing.
+```
+your message ──▶ hook ──▶ keyword match vs catalog ──▶ one factual note to the agent ──▶ agent suggests the command
+```
+
+Catalog source of truth is [`build/entries.json`](build/entries.json); `build_catalog.py` generates `data/catalog.json` (CI fails on drift). Codex entries never use `/loop` (Codex doesn't have it). Full architecture, invariants, and the prompt-injection-safe wording: [DESIGN.md](DESIGN.md).
 
 ## Dev
 
 ```
-python3 -m pytest tests/
-ruff check . && ruff format --check .
-mypy --strict core/suggest.py core/ctl.py
+python3 -m pytest tests/        # 28 tests
+ruff check . && mypy --strict core/suggest.py core/ctl.py
 ```
-
-Fail-open invariant: every adapter path exits 0. A broken loopable must never block or erase a prompt.
-
-## License
 
 MIT
