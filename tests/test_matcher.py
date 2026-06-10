@@ -42,6 +42,7 @@ GOLDEN = [
         "claude",
         "/goal all tests pass and lint is clean",
     ),
+    ("ensure all tests pass", "claude", "/goal all tests pass and lint is clean"),
     ("the build is failing again", "claude", "/goal the production build exits 0"),
     (
         "keep an eye on the pr while i grab lunch",
