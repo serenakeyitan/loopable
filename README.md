@@ -1,6 +1,7 @@
 # loopable
 
 **Don't prompt the loop — the loop prompts you.**
+### check out my latest work, and run `/loop` in [first-tree](https://github.com/agent-team-foundation/first-tree) free :D
 
 `/loop` and `/goal` suggestions matched from your conversation, never auto-run. Claude Code + Codex CLI.
 
