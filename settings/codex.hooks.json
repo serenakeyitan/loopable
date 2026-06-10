@@ -1,8 +1,0 @@
-{
-  "UserPromptSubmit": [
-    { "command": ["python3", "$REPO/adapters/codex.py"] }
-  ],
-  "Stop": [
-    { "command": ["python3", "$REPO/adapters/codex.py"] }
-  ]
-}

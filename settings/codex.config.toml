@@ -1,0 +1,25 @@
+# loopable — append to ~/.codex/config.toml (replace $REPO with the absolute
+# clone path). config.toml is the single home for codex hooks: defining the
+# same hooks in ~/.codex/hooks.json too makes each one run twice.
+
+[[hooks.UserPromptSubmit]]
+[[hooks.UserPromptSubmit.hooks]]
+type = "command"
+command = "python3 $REPO/adapters/codex.py"
+
+[[hooks.Stop]]
+[[hooks.Stop.hooks]]
+type = "command"
+command = "python3 $REPO/adapters/codex.py"
+
+# Trust (required: untrusted user-layer hooks are discovered but silently
+# skipped at dispatch). Get each hook's currentHash from `codex app-server`
+# hooks/list, or run /hooks once inside Codex instead. Keys embed the
+# absolute config path and snake_case event labels; the hash breaks on any
+# command/timeout/matcher edit — re-trust after edits.
+#
+# [hooks.state."/absolute/path/to/.codex/config.toml:user_prompt_submit:0:0"]
+# trusted_hash = "<currentHash>"
+#
+# [hooks.state."/absolute/path/to/.codex/config.toml:stop:0:0"]
+# trusted_hash = "<currentHash>"

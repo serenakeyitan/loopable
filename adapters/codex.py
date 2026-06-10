@@ -1,7 +1,9 @@
-"""Codex CLI adapter. Wire in hooks.json (see settings/codex.hooks.json).
+"""Codex CLI adapter. Wire in ~/.codex/config.toml (see settings/codex.config.toml)
+and grant trust — ONBOARDING.md Step 4/4b.
 
-Codex renders injected context visibly (openai/codex#16933), so output is the
-clean one-line template. Every path exits 0 with empty output on error.
+Output is the clean one-line template: it lands as a model-visible developer
+message (in exec mode it is not shown in the transcript, so it must read clean
+either way). Every path exits 0 with empty output on error.
 """
 
 from __future__ import annotations

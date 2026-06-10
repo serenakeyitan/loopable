@@ -95,7 +95,7 @@ loopable: "{trigger_phrase}" matches a saved loop. Consider running: {loop_comma
 
 **Claude Code** — `UserPromptSubmit` (primary) and `Stop` (secondary) hooks emit stdout / `additionalContext`. Never `decision:block`. Hook entry must be synchronous (`async` output is not injected) and is snapshotted at session start (install requires `/hooks` or restart). Use exec-form `args`.
 
-**Codex CLI** — same two hook events (hooks confirmed in codex-cli 0.133.0). Non-managed hooks are skipped until trusted via `/hooks`; document the one-time trust step.
+**Codex CLI** — same two hook events (hooks confirmed in codex-cli 0.133.0). Wire via `[[hooks.*]]` tables in user `config.toml` (single home; `hooks.json` also loads in the same layer, so defining both runs every hook twice). Untrusted user-layer hooks are *discovered but silently skipped at dispatch*: trust = `[hooks.state."<source>:<snake_case_event>:<group>:<handler>"] trusted_hash` entries in user config.toml, granted via `/hooks` interactively or written headlessly with the `currentHash` from app-server `hooks/list`; any command/timeout/matcher edit invalidates it. E2E-found 2026-06-10: in `codex exec` the injected text lands as a model-visible developer message, NOT in the visible transcript — the original "renders visibly (#16933)" assumption holds at best for interactive mode, and relay to the user is model discretion on both hosts. `--dangerously-bypass-hook-trust` warns but does not run untrusted hooks in exec 0.133.0.
 
 Rejected surfaces: statusline, output styles (no write path); Codex `notify` (one-way); MCP (cannot watch passively).
 

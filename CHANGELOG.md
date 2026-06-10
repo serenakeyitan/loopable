@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.1 — 2026-06-10
+
+- Fix Codex install (found by real-session E2E): hooks belong in `~/.codex/config.toml` `[[hooks.*]]` tables, and untrusted user-layer hooks are discovered but *silently skipped* — ONBOARDING now covers headless trust via `[hooks.state]` + app-server `hooks/list`, the `/hooks` interactive path, and warns that hooks.json+config.toml double-wiring runs every hook twice. `settings/codex.hooks.json` → `settings/codex.config.toml`. DESIGN corrected: in `codex exec` the suggestion is a model-visible developer message, not transcript-visible.
+
 ## 0.4.0 — 2026-06-10
 
 - Semantic layer: `INTENTS.md` — plain-language intent→command rules, injected once per session by the Claude SessionStart hook. The host model matches meaning, not substrings, so any phrasing in any language works ("测试又挂了" ≙ "tests keep flaking"). Deterministic keyword + retry layers stay as the zero-cost floor. Tests pin md↔catalog consistency and the denylist; mute suppresses injection. 43 tests total.

@@ -87,22 +87,27 @@ Leave `$ARGUMENTS` literal — it is a Claude Code runtime placeholder.
 
 ## Step 4 — Codex CLI
 
-Read `~/.codex/hooks.json`; if absent, create it as `{}`. Merge (append; create
-the array if the event key is absent; skip if an entry already references
-`adapters/codex.py`):
+Wire the hooks in `~/.codex/config.toml` — not `hooks.json`. Codex 0.133.0
+loads both from the same user layer; defining both duplicates every hook
+execution (with only a log warning), and trust state has to live in
+config.toml anyway. If a previous loopable install left entries in
+`~/.codex/hooks.json`, remove them.
 
-```json
-{
-  "UserPromptSubmit": [
-    { "command": ["python3", "$REPO/adapters/codex.py"] }
-  ],
-  "Stop": [
-    { "command": ["python3", "$REPO/adapters/codex.py"] }
-  ]
-}
+Append to `~/.codex/config.toml` (skip any block whose command already
+references `adapters/codex.py`; replace `$REPO` with the absolute clone
+path — the same snippet is pre-written in `settings/codex.config.toml`):
+
+```toml
+[[hooks.UserPromptSubmit]]
+[[hooks.UserPromptSubmit.hooks]]
+type = "command"
+command = "python3 $REPO/adapters/codex.py"
+
+[[hooks.Stop]]
+[[hooks.Stop.hooks]]
+type = "command"
+command = "python3 $REPO/adapters/codex.py"
 ```
-
-Validate: `python3 -c "import json;json.load(open('$HOME/.codex/hooks.json'))"`.
 
 Pipe-test the Codex adapter:
 
@@ -114,8 +119,35 @@ echo '{"session_id":"onboard-codex","prompt":"the tests keep flaking"}' \
 Expected (one line, no markup):
 `loopable: "tests keep flaking" matches a saved loop. Consider running: /goal all tests pass and lint is clean, stop after 20 turns`
 
-**Tell the user:** Codex skips untrusted hooks — they must trust it once via
-`/hooks` inside Codex.
+### Step 4b — trust (required; untrusted hooks are silently skipped)
+
+Codex lists untrusted user-layer hooks but skips them at dispatch with no
+error. Grant trust one of two ways:
+
+- **Interactive:** the user runs `/hooks` once inside Codex → "Trust all and
+  continue". Tell them this is the activation step.
+- **Headless:** talk to `codex app-server` over stdio JSON-RPC: send
+  `initialize`, the `initialized` notification, then
+  `{"method":"hooks/list","params":{}}` (`params` is required — omitting it
+  errors with -32600, which is not the same as "0 hooks"). For each of the
+  two hooks take `key` and `currentHash` and append:
+
+```toml
+[hooks.state."<key for user_prompt_submit>"]
+trusted_hash = "<currentHash>"
+
+[hooks.state."<key for stop>"]
+trusted_hash = "<currentHash>"
+```
+
+Keys embed the absolute config path and snake_case event labels (e.g.
+`/home/u/.codex/config.toml:user_prompt_submit:0:0`). The hash covers the
+hook's command/timeout/matcher, so any edit invalidates trust — re-trust
+after edits. Do not rely on `--dangerously-bypass-hook-trust`; in exec mode
+0.133.0 it warns but does not actually run untrusted hooks.
+
+Verify: re-run hooks/list and check both hooks show `trustStatus: "trusted"`
+— presence alone does not mean they will run.
 
 ## Step 5 — verify and hand off
 
@@ -132,9 +164,11 @@ Expected (one line, no markup):
 
 ## Uninstall
 
-1. Remove the three loopable entries from `~/.claude/settings.json` and the two
-   from `~/.codex/hooks.json` (drop any event key left with an empty array; if
-   loopable created `hooks.json` and nothing else remains, delete the file).
+1. Remove the three loopable entries from `~/.claude/settings.json`, and from
+   `~/.codex/config.toml` the two `[[hooks.*]]` blocks plus their
+   `[hooks.state."…"]` trust entries. Legacy installs may also have entries in
+   `~/.codex/hooks.json` — remove those too (delete the file if loopable
+   created it and nothing else remains).
 2. Delete `~/.claude/commands/loopable.md`.
 3. `rm -rf $REPO "${XDG_STATE_HOME:-$HOME/.local/state}/loopable"`.
 4. Tell the user: a live session keeps running the old hook snapshot until they
