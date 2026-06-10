@@ -12,10 +12,20 @@
       "min_confidence": 1,
       "triggers": [
         "watch the pr",
+        "watch this pr",
         "babysit the pr",
+        "babysit ci",
         "keep checking the pr",
+        "keep an eye on the pr",
+        "keep an eye on ci",
+        "monitor the pr",
+        "monitor ci",
         "watch ci",
-        "keep checking ci"
+        "wait for ci",
+        "keep checking ci",
+        "check ci every",
+        "until ci passes",
+        "until ci is green"
       ]
     },
     {
@@ -32,8 +42,21 @@
       "triggers": [
         "build keeps failing",
         "build is broken",
+        "build is failing",
+        "build still failing",
+        "build still fails",
+        "build failed again",
+        "broken build",
         "fix the build",
-        "until the build passes"
+        "make the build pass",
+        "make the build green",
+        "get the build green",
+        "get the build passing",
+        "until the build passes",
+        "until the build is green",
+        "won't compile",
+        "doesn't compile",
+        "won't build"
       ]
     },
     {
@@ -50,8 +73,19 @@
       "triggers": [
         "until coverage",
         "coverage to 80",
+        "coverage to 90",
+        "coverage to 100",
         "reach 80% coverage",
-        "raise the coverage"
+        "reach 90% coverage",
+        "raise the coverage",
+        "raise coverage",
+        "increase coverage",
+        "increase test coverage",
+        "improve coverage",
+        "improve test coverage",
+        "bump coverage",
+        "more test coverage",
+        "add tests until"
       ]
     },
     {
@@ -68,7 +102,14 @@
       "triggers": [
         "migrations apply",
         "migration keeps failing",
-        "migrations keep failing"
+        "migrations keep failing",
+        "migration is failing",
+        "migrations are failing",
+        "migration failed again",
+        "migrations are broken",
+        "fix the migration",
+        "migration won't apply",
+        "migrations won't apply"
       ]
     },
     {
@@ -87,11 +128,25 @@
       "triggers": [
         "tests keep flaking",
         "tests are flaky",
+        "flaky test",
         "keep failing",
         "keeps failing",
         "until tests pass",
         "until the tests pass",
-        "make the tests pass"
+        "until all tests pass",
+        "make the tests pass",
+        "make all tests pass",
+        "make sure the tests pass",
+        "make sure all tests pass",
+        "get the tests passing",
+        "get tests passing",
+        "fix the tests",
+        "fix the failing tests",
+        "fix failing tests",
+        "tests are failing",
+        "tests are still failing",
+        "tests still failing",
+        "tests keep breaking"
       ]
     },
     {
@@ -106,10 +161,17 @@
       "intent": "verify-until-green",
       "min_confidence": 1,
       "triggers": [
-        "migrate every call site",
-        "update all call sites",
+        "every call site",
+        "all call sites",
+        "all the call sites",
+        "update every usage",
+        "update all usages",
+        "replace all usages",
         "until everything compiles",
-        "migrate all imports"
+        "until it compiles",
+        "migrate all imports",
+        "update all imports",
+        "fix all the imports"
       ]
     },
     {
@@ -124,8 +186,13 @@
       "min_confidence": 1,
       "triggers": [
         "check the deploy every",
+        "check the deployment every",
         "watch the deploy",
+        "monitor the deploy",
         "keep checking the deploy",
+        "keep an eye on the deploy",
+        "wait for the deploy",
+        "until the deploy finishes",
         "deployment status every"
       ]
     }

@@ -36,6 +36,33 @@ GOLDEN = [
         "claude",
         "/goal every call site is migrated",
     ),
+    # general phrasings (expanded triggers)
+    (
+        "make sure all tests pass before you finish",
+        "claude",
+        "/goal all tests pass and lint is clean",
+    ),
+    ("the build is failing again", "claude", "/goal the production build exits 0"),
+    (
+        "keep an eye on the pr while i grab lunch",
+        "claude",
+        "/loop 10m run `gh pr checks`",
+    ),
+    (
+        "can you monitor the deployment for me",
+        "claude",
+        "/loop 5m check the latest deployment",
+    ),
+    (
+        "increase test coverage please",
+        "claude",
+        "/goal test coverage is at least 80%",
+    ),
+    (
+        "the migrations won't apply locally",
+        "claude",
+        "/goal all database migrations apply cleanly",
+    ),
 ]
 
 
