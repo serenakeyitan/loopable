@@ -4,6 +4,8 @@
 
 `/loop` and `/goal` suggestions matched from your conversation, never auto-run. Claude Code + Codex CLI.
 
+> 📚 loopable is the librarian — [**awesome-agent-loops**](https://github.com/serenakeyitan/awesome-agent-loops) is the library: the curated collection of copy-paste `/loop`, `/goal`, and `/schedule` prompts these suggestions come from. Browse it to see every loop loopable can hand you, or contribute one and the catalog grows.
+
 You say "ugh, the tests keep flaking" — loopable matches it against a catalog of saved loops and surfaces the command:
 
 ```
