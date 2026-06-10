@@ -1,9 +1,10 @@
 # loopable
 
-**Don't prompt the loop — the loop prompts you.**
-### check out my latest work, and run `/loop` in [first-tree](https://github.com/agent-team-foundation/first-tree) free :D
+**`/loop` and `/goal` suggestions matched from your conversation — never auto-run.**
 
-> 📚 loopable is the librarian — [**awesome-agent-loops**](https://github.com/serenakeyitan/awesome-agent-loops) is the library: the curated collection of copy-paste `/loop`, `/goal`, and `/schedule` prompts these suggestions come from.
+The librarian for [**awesome-agent-loops**](https://github.com/serenakeyitan/awesome-agent-loops), the library of copy-paste `/loop`, `/goal`, and `/schedule` prompts these suggestions come from.
+
+### check out my latest work, and run `/loop` in [first-tree](https://github.com/agent-team-foundation/first-tree) free :D
 
 ## The pain
 
