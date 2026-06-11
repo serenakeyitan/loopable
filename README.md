@@ -1,5 +1,7 @@
 # loopable
 
+[![ci](https://github.com/serenakeyitan/loopable/actions/workflows/ci.yml/badge.svg)](https://github.com/serenakeyitan/loopable/actions/workflows/ci.yml) [![version](https://img.shields.io/badge/version-1.0.0-blue)](CHANGELOG.md) [![license](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+
 **Rules of judgment for `/loop` and `/goal`, delivered into your agent's context — the agent judges, you decide, nothing auto-runs.**
 
 The librarian for [**awesome-agent-loops**](https://github.com/serenakeyitan/awesome-agent-loops), the library of copy-paste `/loop`, `/goal`, and `/schedule` prompts the rules carry with them.
@@ -60,7 +62,11 @@ loop-shaped moment ──▶ agent offers one fitted /goal or /loop on a single 
 
 The code's only decisions are delivery decisions: has this session got the rules yet, is a reminder due, is loopable muted. Codex has no session-start hook event, so there the rules digest rides the first message of each session instead. The rules include a reference library of proven loops (seeded from awesome-agent-loops) and composition guard rails for everything the library doesn't cover — the agent names *your* failing artifact in the success condition rather than reciting a canned phrase.
 
-Full architecture, the v2 pivot rationale (why the keyword matcher died), and the prompt-injection-safe wording: [DESIGN.md](DESIGN.md).
+Full architecture, the v2 pivot rationale (why the keyword matcher died), and the prompt-injection-safe wording: [DESIGN.md](DESIGN.md). Version history: [CHANGELOG.md](CHANGELOG.md).
+
+## Make it yours
+
+[RULES.md](RULES.md) is plain markdown and the whole product — edit it directly. Add your own loops to the reference library, tighten or relax the judgment criteria, change the etiquette. There is no build step and no schema: save the file and the next session picks it up. (Two content gates run in CI: the injected text stays free of prompt-injection-bait phrasing, and the core library commands stay present — see `tests/test_rules_content.py`.)
 
 ## Dev
 
