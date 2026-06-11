@@ -2,7 +2,9 @@
 
 [![ci](https://github.com/serenakeyitan/loopable/actions/workflows/ci.yml/badge.svg)](https://github.com/serenakeyitan/loopable/actions/workflows/ci.yml) [![version](https://img.shields.io/badge/version-1.0.0-blue)](CHANGELOG.md) [![license](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-**Rules of judgment for `/loop` and `/goal`, delivered into your agent's context — the agent judges, you decide, nothing auto-runs.**
+**A hook that reminds you to use loops — so you don't need to remember any.**
+
+Rules of judgment for `/loop` and `/goal`, delivered into your agent's context: the agent judges, you decide, nothing auto-runs.
 
 The librarian for [**awesome-agent-loops**](https://github.com/serenakeyitan/awesome-agent-loops), the library of copy-paste `/loop`, `/goal`, and `/schedule` prompts the rules carry with them.
 
