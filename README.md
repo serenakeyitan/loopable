@@ -12,7 +12,7 @@ The librarian for [**awesome-agent-loops**](https://github.com/serenakeyitan/awe
 
 ![loopable judging "pass all the test" as loop-shaped and offering /goal all tests pass and lint is clean, stop after 20 turns](docs/media/demo-pass-all-the-test.png)
 
-*Live and unstaged: "pass all the test" matches no keyword (there are none) — the agent judged it from RULES.md, offered the loop on one line, then ran the suite.*
+*auto-suggest loop when loopable prompts are detected!*
 
 ## The pain
 
