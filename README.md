@@ -1,9 +1,5 @@
 # loopable
 
-![loopable judging "pass all the test" as loop-shaped and offering /goal all tests pass and lint is clean, stop after 20 turns](docs/media/demo-pass-all-the-test.png)
-
-*Live and unstaged: "pass all the test" matches no keyword (there are none) — the agent judged it from RULES.md, offered the loop on one line, then ran the suite.*
-
 [![ci](https://github.com/serenakeyitan/loopable/actions/workflows/ci.yml/badge.svg)](https://github.com/serenakeyitan/loopable/actions/workflows/ci.yml) [![version](https://img.shields.io/badge/version-1.0.0-blue)](CHANGELOG.md) [![license](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
 **Rules of judgment for `/loop` and `/goal`, delivered into your agent's context — the agent judges, you decide, nothing auto-runs.**
@@ -11,6 +7,12 @@
 The librarian for [**awesome-agent-loops**](https://github.com/serenakeyitan/awesome-agent-loops), the library of copy-paste `/loop`, `/goal`, and `/schedule` prompts the rules carry with them.
 
 ### check out my latest work, and run `/loop` in [first-tree](https://github.com/agent-team-foundation/first-tree) free :D
+
+**Auto-suggests loops and goals from your conversation:**
+
+![loopable judging "pass all the test" as loop-shaped and offering /goal all tests pass and lint is clean, stop after 20 turns](docs/media/demo-pass-all-the-test.png)
+
+*Live and unstaged: "pass all the test" matches no keyword (there are none) — the agent judged it from RULES.md, offered the loop on one line, then ran the suite.*
 
 ## The pain
 
