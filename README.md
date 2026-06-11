@@ -20,6 +20,10 @@ claude:  that's loop-shaped — you can run:
          /goal all tests pass and lint is clean, stop after 20 turns
 ```
 
+Live, unstaged — "pass all the test" matches no keyword (there are none); the agent judged it from RULES.md, offered the loop, then ran the suite:
+
+![loopable judging "pass all the test" as loop-shaped and offering /goal all tests pass and lint is clean, stop after 20 turns](docs/media/demo-pass-all-the-test.png)
+
 - **Never auto-runs.** Hooks physically cannot trigger slash commands; you always press enter yourself.
 - **Agentic, not mechanical.** The hook ships judgment rules, not yes/no answers. Code decides nothing about your words.
 - **Fail-open.** Any error exits silent; it can never block or eat a prompt.
