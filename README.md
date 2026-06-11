@@ -1,5 +1,9 @@
 # loopable
 
+![loopable judging "pass all the test" as loop-shaped and offering /goal all tests pass and lint is clean, stop after 20 turns](docs/media/demo-pass-all-the-test.png)
+
+*Live and unstaged: "pass all the test" matches no keyword (there are none) — the agent judged it from RULES.md, offered the loop on one line, then ran the suite.*
+
 [![ci](https://github.com/serenakeyitan/loopable/actions/workflows/ci.yml/badge.svg)](https://github.com/serenakeyitan/loopable/actions/workflows/ci.yml) [![version](https://img.shields.io/badge/version-1.0.0-blue)](CHANGELOG.md) [![license](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
 **Rules of judgment for `/loop` and `/goal`, delivered into your agent's context — the agent judges, you decide, nothing auto-runs.**
@@ -14,17 +18,13 @@ Claude Code already ships the commands that kill repetitive work: `/goal` keeps 
 
 ## What loopable is
 
-A **hook** that delivers [RULES.md](RULES.md) — plain-language rules for judging when a moment is loop-shaped and what single command to offer — into each session's context. There is no keyword list and no matcher: the agent you're already talking to reads the rules and judges every message itself, so *"测试又挂了"*, *"make sure it goes green"*, and a third *"run it again"* all count, in any phrasing, in any language.
+A **hook** that delivers [RULES.md](RULES.md) — plain-language rules for judging when a moment is loop-shaped and what single command to offer — into each session's context. There is no keyword list and no matcher: the agent you're already talking to reads the rules and judges every message itself, so *"make it go green"*, *"the tests are flaky again"*, and a third *"run it again"* all count — any phrasing, any language.
 
 ```
-you:     测试老是挂，烦死了
+you:     ugh, the tests keep flaking again
 claude:  that's loop-shaped — you can run:
          /goal all tests pass and lint is clean, stop after 20 turns
 ```
-
-Live, unstaged — "pass all the test" matches no keyword (there are none); the agent judged it from RULES.md, offered the loop, then ran the suite:
-
-![loopable judging "pass all the test" as loop-shaped and offering /goal all tests pass and lint is clean, stop after 20 turns](docs/media/demo-pass-all-the-test.png)
 
 - **Never auto-runs.** Hooks physically cannot trigger slash commands; you always press enter yourself.
 - **Agentic, not mechanical.** The hook ships judgment rules, not yes/no answers. Code decides nothing about your words.
