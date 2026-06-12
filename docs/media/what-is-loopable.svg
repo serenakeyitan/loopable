@@ -2,47 +2,47 @@
   <rect x="0" y="0" width="1600" height="760" fill="#f2efe9"/>
 
   <!-- corner brackets -->
-  <path d="M60 100 v-40 h40" fill="none" stroke="#c63d2f" stroke-width="5"/>
-  <path d="M1540 60 h-40 M1540 60 v40" fill="none" stroke="#c63d2f" stroke-width="5"/>
-  <path d="M60 660 v40 h40" fill="none" stroke="#c63d2f" stroke-width="5"/>
-  <path d="M1540 700 h-40 M1540 700 v-40" fill="none" stroke="#c63d2f" stroke-width="5"/>
+  <path d="M60 100 v-40 h40" fill="none" stroke="#2f7d4f" stroke-width="5"/>
+  <path d="M1540 60 h-40 M1540 60 v40" fill="none" stroke="#2f7d4f" stroke-width="5"/>
+  <path d="M60 660 v40 h40" fill="none" stroke="#2f7d4f" stroke-width="5"/>
+  <path d="M1540 700 h-40 M1540 700 v-40" fill="none" stroke="#2f7d4f" stroke-width="5"/>
 
   <!-- title -->
   <text x="85" y="150" font-size="80" fill="#161616">loopable</text>
-  <rect x="88" y="172" width="225" height="9" fill="#c63d2f"/>
+  <rect x="88" y="172" width="225" height="9" fill="#2f7d4f"/>
   <text x="1475" y="115" font-size="26" fill="#666" text-anchor="end">free · steal this</text>
 
   <!-- card 1: prompt -->
   <rect x="85" y="280" width="330" height="190" rx="12" fill="#fbf9f4" stroke="#161616" stroke-width="3"/>
-  <rect x="85" y="280" width="330" height="58" rx="12" fill="#c63d2f"/>
-  <rect x="85" y="310" width="330" height="28" fill="#c63d2f"/>
+  <rect x="85" y="280" width="330" height="58" rx="12" fill="#2f7d4f"/>
+  <rect x="85" y="310" width="330" height="28" fill="#2f7d4f"/>
   <text x="110" y="319" font-size="26" fill="#fff">prompt</text>
   <text x="110" y="395" font-size="29" fill="#161616">"tests keep</text>
   <text x="110" y="435" font-size="29" fill="#161616"> flaking"</text>
 
-  <line x1="420" y1="375" x2="478" y2="375" stroke="#c63d2f" stroke-width="3.5"/>
-  <path d="M486 375 l-17 -9 v18 z" fill="#c63d2f"/>
+  <line x1="420" y1="375" x2="478" y2="375" stroke="#2f7d4f" stroke-width="3.5"/>
+  <path d="M486 375 l-17 -9 v18 z" fill="#2f7d4f"/>
 
   <!-- card 2: claude + hook -->
   <rect x="490" y="280" width="350" height="190" rx="12" fill="#fbf9f4" stroke="#161616" stroke-width="3"/>
   <rect x="490" y="280" width="350" height="58" rx="12" fill="#161616"/>
   <rect x="490" y="310" width="350" height="28" fill="#161616"/>
   <text x="515" y="319" font-size="26" fill="#fff">hook</text>
-  <text x="665" y="412" font-size="29" fill="#c63d2f" font-weight="bold" text-anchor="middle">loopable.md</text>
+  <text x="665" y="412" font-size="29" fill="#2f7d4f" font-weight="bold" text-anchor="middle">loopable.md</text>
 
-  <line x1="845" y1="375" x2="903" y2="375" stroke="#c63d2f" stroke-width="3.5"/>
-  <path d="M911 375 l-17 -9 v18 z" fill="#c63d2f"/>
+  <line x1="845" y1="375" x2="903" y2="375" stroke="#2f7d4f" stroke-width="3.5"/>
+  <path d="M911 375 l-17 -9 v18 z" fill="#2f7d4f"/>
 
   <!-- card 3: suggestion -->
   <rect x="915" y="280" width="360" height="190" rx="12" fill="#fbf9f4" stroke="#161616" stroke-width="3"/>
-  <rect x="915" y="280" width="360" height="58" rx="12" fill="#c63d2f"/>
-  <rect x="915" y="310" width="360" height="28" fill="#c63d2f"/>
+  <rect x="915" y="280" width="360" height="58" rx="12" fill="#2f7d4f"/>
+  <rect x="915" y="310" width="360" height="28" fill="#2f7d4f"/>
   <text x="940" y="319" font-size="26" fill="#fff">suggestion</text>
-  <text x="940" y="395" font-size="27" font-weight="bold" fill="#c63d2f">/goal tests pass,</text>
-  <text x="940" y="433" font-size="27" font-weight="bold" fill="#c63d2f">stop after 20 turns</text>
+  <text x="940" y="395" font-size="27" font-weight="bold" fill="#2f7d4f">/goal tests pass,</text>
+  <text x="940" y="433" font-size="27" font-weight="bold" fill="#2f7d4f">stop after 20 turns</text>
 
-  <line x1="1280" y1="375" x2="1316" y2="375" stroke="#c63d2f" stroke-width="3.5"/>
-  <path d="M1324 375 l-17 -9 v18 z" fill="#c63d2f"/>
+  <line x1="1280" y1="375" x2="1316" y2="375" stroke="#2f7d4f" stroke-width="3.5"/>
+  <path d="M1324 375 l-17 -9 v18 z" fill="#2f7d4f"/>
 
   <!-- the loop -->
   <circle cx="1432" cy="375" r="103" fill="none" stroke="#161616" stroke-width="3.5"/>
