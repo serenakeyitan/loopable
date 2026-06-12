@@ -3,7 +3,7 @@
 v2 (2026-06-10): no matchers. Earlier versions decided yes/no in code
 (keyword triggers, retry-phrase lists, token-hash similarity) — permanent
 whack-a-mole against natural language. Now the agent judges what is
-loop-shaped by reading RULES.md; this module only owns delivery and state:
+loop-shaped by reading loopable.md; this module only owns delivery and state:
 
   session_context() -> str        full rules (SessionStart, Claude)
   prompt_context(payload) -> str  full rules on a session's first message,
@@ -24,7 +24,7 @@ from pathlib import Path
 from typing import Any
 
 _ROOT = Path(__file__).resolve().parent.parent
-_RULES = _ROOT / "RULES.md"
+_RULES = _ROOT / "loopable.md"
 _REMINDER_CLAUDE = _ROOT / "core" / "reminder_claude.txt"
 _DIGEST_CODEX = _ROOT / "core" / "digest_codex.txt"
 _PLATFORMS = ("claude", "codex")

@@ -1,11 +1,11 @@
-"""RULES.md is the product: judgment rules the agent interprets. These tests
+"""loopable.md is the product: judgment rules the agent interprets. These tests
 gate its structure and injection safety, not its judgment (that's the
 model's)."""
 
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-RULES = (ROOT / "RULES.md").read_text(encoding="utf-8")
+RULES = (ROOT / "loopable.md").read_text(encoding="utf-8")
 REMINDER = (ROOT / "core" / "reminder_claude.txt").read_text(encoding="utf-8")
 DIGEST = (ROOT / "core" / "digest_codex.txt").read_text(encoding="utf-8")
 

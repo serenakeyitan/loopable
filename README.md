@@ -22,9 +22,9 @@ Claude Code already ships the commands that kill repetitive work: `/goal` keeps 
 
 ## What loopable is
 
-A **hook** that delivers [RULES.md](RULES.md) — plain-language rules for judging when a moment is loop-shaped and what single command to offer — into each session's context. There is no keyword list and no matcher: the agent you're already talking to reads the rules and judges every message itself, so *"make it go green"*, *"the tests are flaky again"*, and a third *"run it again"* all count — any phrasing, any language.
+A **hook** that delivers [loopable.md](loopable.md) — plain-language rules for judging when a moment is loop-shaped and what single command to offer — into each session's context. There is no keyword list and no matcher: the agent you're already talking to reads the rules and judges every message itself, so *"make it go green"*, *"the tests are flaky again"*, and a third *"run it again"* all count — any phrasing, any language.
 
-![loopable flow: prompt → claude + hook (reads RULES.md) → suggestion: /goal tests pass, stop after 20 turns → fix ⇄ verify loop runs until green](docs/media/what-is-loopable.svg)
+![loopable flow: prompt → claude + hook (reads loopable.md) → suggestion: /goal tests pass, stop after 20 turns → fix ⇄ verify loop runs until green](docs/media/what-is-loopable.svg)
 
 ```
 you:     ugh, the tests keep flaking again
@@ -61,7 +61,7 @@ Then say something loop-shaped — any phrasing — and watch.
 ## How it works
 
 ```
-session start ──▶ hook injects RULES.md ──▶ the agent judges every message itself
+session start ──▶ hook injects loopable.md ──▶ the agent judges every message itself
 every ~20 messages ──▶ hook re-injects a short reminder (delivery policy — still no judgment in code)
 loop-shaped moment ──▶ agent offers one fitted /goal or /loop on a single line ──▶ you decide
 ```
@@ -72,7 +72,7 @@ Full architecture, the v2 pivot rationale (why the keyword matcher died), and th
 
 ## Make it yours
 
-[RULES.md](RULES.md) is plain markdown and the whole product — edit it directly. Add your own loops to the reference library, tighten or relax the judgment criteria, change the etiquette. There is no build step and no schema: save the file and the next session picks it up. (Two content gates run in CI: the injected text stays free of prompt-injection-bait phrasing, and the core library commands stay present — see `tests/test_rules_content.py`.)
+[loopable.md](loopable.md) is plain markdown and the whole product — edit it directly. Add your own loops to the reference library, tighten or relax the judgment criteria, change the etiquette. There is no build step and no schema: save the file and the next session picks it up. (Two content gates run in CI: the injected text stays free of prompt-injection-bait phrasing, and the core library commands stay present — see `tests/test_rules_content.py`.)
 
 ## Dev
 

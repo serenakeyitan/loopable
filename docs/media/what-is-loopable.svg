@@ -27,8 +27,8 @@
   <rect x="490" y="280" width="350" height="190" rx="12" fill="#fbf9f4" stroke="#161616" stroke-width="3"/>
   <rect x="490" y="280" width="350" height="58" rx="12" fill="#161616"/>
   <rect x="490" y="310" width="350" height="28" fill="#161616"/>
-  <text x="515" y="319" font-size="26" fill="#fff">claude + hook</text>
-  <text x="665" y="412" font-size="29" fill="#c63d2f" font-weight="bold" text-anchor="middle">loopable ↻</text>
+  <text x="515" y="319" font-size="26" fill="#fff">hook</text>
+  <text x="665" y="412" font-size="29" fill="#c63d2f" font-weight="bold" text-anchor="middle">loopable.md</text>
 
   <line x1="845" y1="375" x2="903" y2="375" stroke="#c63d2f" stroke-width="3.5"/>
   <path d="M911 375 l-17 -9 v18 z" fill="#c63d2f"/>

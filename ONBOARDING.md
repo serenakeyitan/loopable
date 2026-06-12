@@ -1,7 +1,7 @@
 # ONBOARDING.md — agent install guide
 
 You are an AI coding agent. The user asked you to install **loopable**: small
-hooks that deliver RULES.md — rules of judgment for spotting loop-shaped
+hooks that deliver loopable.md — rules of judgment for spotting loop-shaped
 moments and offering one `/loop` or `/goal` command — into each session's
 context. The hooks decide nothing about content; the agent reading the rules
 does the judging. Follow these steps exactly. Show the user what you changed.
@@ -31,7 +31,7 @@ echo '{"session_id":"onboard","prompt":"hello","cwd":"/tmp"}' \
   | python3 adapters/claude.py userpromptsubmit
 ```
 
-Expected: a `<loopable-rules>` block containing the contents of RULES.md.
+Expected: a `<loopable-rules>` block containing the contents of loopable.md.
 Empty output or non-zero exit → stop and report.
 
 Note: this test records delivery state under
@@ -159,7 +159,7 @@ Verify: re-run hooks/list and check both hooks show `trustStatus: "trusted"`
    - activation: `/hooks` (Claude) / trust via `/hooks` (Codex)
    - live test: in a new session, describe something loop-shaped in ANY
      phrasing or language — *"make sure the tests go green"*, *"测试老是挂"* —
-     and the agent (judging by RULES.md, not keywords) offers a fitted
+     and the agent (judging by loopable.md, not keywords) offers a fitted
      `/goal` on one line
    - the rules land once per session plus a short reminder every ~20 messages
    - mute: `python3 $REPO/core/ctl.py off` (or `/loopable off`)

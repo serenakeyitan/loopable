@@ -1,7 +1,7 @@
 """Claude Code adapter. Wire in settings.json (see settings/claude.settings.json).
 
 Modes: userpromptsubmit | stop | session_start
-session_start injects RULES.md; userpromptsubmit injects it for sessions
+session_start injects loopable.md; userpromptsubmit injects it for sessions
 SessionStart never saw (resumed/pre-install) and a short reminder every
 ~20 messages; stop is a no-op kept for backward-compatible installs.
 Every path exits 0 with empty output on error (DESIGN: fail open).
