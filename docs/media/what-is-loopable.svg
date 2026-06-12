@@ -10,7 +10,6 @@
   <!-- title -->
   <text x="85" y="150" font-size="80" fill="#161616">loopable</text>
   <rect x="88" y="172" width="225" height="9" fill="#2f7d4f"/>
-  <text x="1475" y="115" font-size="26" fill="#666" text-anchor="end">free · steal this</text>
 
   <!-- card 1: prompt -->
   <rect x="85" y="280" width="330" height="190" rx="12" fill="#fbf9f4" stroke="#161616" stroke-width="3"/>
