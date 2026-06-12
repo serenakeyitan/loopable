@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1680 460" font-family="ui-monospace, 'SF Mono', Menlo, monospace">
+  <!-- you -->
+  <rect x="30" y="110" width="430" height="190" rx="26" fill="#f7ccc6" stroke="#111" stroke-width="3.5"/>
+  <text x="58" y="152" font-size="22" fill="#555">you</text>
+  <text x="58" y="205" font-size="30" fill="#111">"the tests keep</text>
+  <text x="58" y="248" font-size="30" fill="#111"> flaking again"</text>
+
+  <!-- arrow 1 -->
+  <line x1="470" y1="205" x2="545" y2="205" stroke="#111" stroke-width="3.5"/>
+  <path d="M545 205 l-16 -9 v18 z" fill="#111"/>
+
+  <!-- loopable -->
+  <rect x="560" y="85" width="450" height="240" rx="26" fill="#f9e9a2" stroke="#111" stroke-width="3.5"/>
+  <text x="588" y="138" font-size="34" fill="#111">loopable ↻</text>
+  <text x="588" y="190" font-size="26" fill="#111">a hook that injects</text>
+  <text x="588" y="228" font-size="26" fill="#111">RULES.md into the agent's</text>
+  <text x="588" y="266" font-size="26" fill="#111">context, once per session</text>
+
+  <!-- arrow 2 -->
+  <line x1="1020" y1="205" x2="1095" y2="205" stroke="#111" stroke-width="3.5"/>
+  <path d="M1095 205 l-16 -9 v18 z" fill="#111"/>
+
+  <!-- claude -->
+  <rect x="1110" y="60" width="540" height="290" rx="26" fill="#bfe8c0" stroke="#111" stroke-width="3.5"/>
+  <text x="1138" y="102" font-size="22" fill="#555">claude</text>
+  <text x="1138" y="152" font-size="28" fill="#111">"that's loop-shaped —</text>
+  <text x="1138" y="190" font-size="28" fill="#111"> you can run:</text>
+  <text x="1138" y="240" font-size="26" fill="#111">/goal all tests pass and</text>
+  <text x="1138" y="276" font-size="26" fill="#111">lint is clean, stop after</text>
+  <text x="1138" y="312" font-size="26" fill="#111">20 turns"</text>
+
+  <!-- footer -->
+  <text x="840" y="425" font-size="26" fill="#555" text-anchor="middle">the agent judges · you decide · nothing auto-runs</text>
+</svg>
