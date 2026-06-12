@@ -1,11 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 800" font-family="ui-monospace, 'SF Mono', Menlo, monospace">
-  <rect x="0" y="0" width="1600" height="800" fill="#f2efe9"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 760" font-family="ui-monospace, 'SF Mono', Menlo, monospace">
+  <rect x="0" y="0" width="1600" height="760" fill="#f2efe9"/>
 
   <!-- corner brackets -->
   <path d="M60 100 v-40 h40" fill="none" stroke="#c63d2f" stroke-width="5"/>
   <path d="M1540 60 h-40 M1540 60 v40" fill="none" stroke="#c63d2f" stroke-width="5"/>
-  <path d="M60 700 v40 h40" fill="none" stroke="#c63d2f" stroke-width="5"/>
-  <path d="M1540 740 h-40 M1540 740 v-40" fill="none" stroke="#c63d2f" stroke-width="5"/>
+  <path d="M60 660 v40 h40" fill="none" stroke="#c63d2f" stroke-width="5"/>
+  <path d="M1540 700 h-40 M1540 700 v-40" fill="none" stroke="#c63d2f" stroke-width="5"/>
 
   <!-- title -->
   <text x="85" y="150" font-size="80" fill="#161616">loopable</text>
@@ -13,48 +13,45 @@
   <text x="1475" y="115" font-size="26" fill="#666" text-anchor="end">free · steal this</text>
 
   <!-- card 1: prompt -->
-  <rect x="85" y="290" width="330" height="210" rx="12" fill="#fbf9f4" stroke="#161616" stroke-width="3"/>
-  <rect x="85" y="290" width="330" height="58" rx="12" fill="#c63d2f"/>
-  <rect x="85" y="320" width="330" height="28" fill="#c63d2f"/>
-  <text x="110" y="329" font-size="26" fill="#fff">01 — prompt</text>
-  <text x="110" y="408" font-size="29" fill="#161616">tests keep</text>
-  <text x="110" y="448" font-size="29" fill="#161616">flaking again</text>
+  <rect x="85" y="280" width="330" height="190" rx="12" fill="#fbf9f4" stroke="#161616" stroke-width="3"/>
+  <rect x="85" y="280" width="330" height="58" rx="12" fill="#c63d2f"/>
+  <rect x="85" y="310" width="330" height="28" fill="#c63d2f"/>
+  <text x="110" y="319" font-size="26" fill="#fff">prompt</text>
+  <text x="110" y="395" font-size="29" fill="#161616">"tests keep</text>
+  <text x="110" y="435" font-size="29" fill="#161616"> flaking"</text>
 
-  <line x1="420" y1="395" x2="478" y2="395" stroke="#c63d2f" stroke-width="3.5"/>
-  <path d="M486 395 l-17 -9 v18 z" fill="#c63d2f"/>
+  <line x1="420" y1="375" x2="478" y2="375" stroke="#c63d2f" stroke-width="3.5"/>
+  <path d="M486 375 l-17 -9 v18 z" fill="#c63d2f"/>
 
   <!-- card 2: claude + hook -->
-  <rect x="490" y="290" width="350" height="210" rx="12" fill="#fbf9f4" stroke="#161616" stroke-width="3"/>
-  <rect x="490" y="290" width="350" height="58" rx="12" fill="#161616"/>
-  <rect x="490" y="320" width="350" height="28" fill="#161616"/>
-  <text x="515" y="329" font-size="26" fill="#fff">02 — claude + hook</text>
-  <text x="515" y="408" font-size="27" fill="#161616">reads RULES.md,</text>
-  <text x="515" y="446" font-size="27" fill="#161616">judges the moment</text>
+  <rect x="490" y="280" width="350" height="190" rx="12" fill="#fbf9f4" stroke="#161616" stroke-width="3"/>
+  <rect x="490" y="280" width="350" height="58" rx="12" fill="#161616"/>
+  <rect x="490" y="310" width="350" height="28" fill="#161616"/>
+  <text x="515" y="319" font-size="26" fill="#fff">claude + hook</text>
+  <text x="665" y="412" font-size="29" fill="#161616" text-anchor="middle">RULES.md</text>
 
-  <line x1="845" y1="395" x2="903" y2="395" stroke="#c63d2f" stroke-width="3.5"/>
-  <path d="M911 395 l-17 -9 v18 z" fill="#c63d2f"/>
+  <line x1="845" y1="375" x2="903" y2="375" stroke="#c63d2f" stroke-width="3.5"/>
+  <path d="M911 375 l-17 -9 v18 z" fill="#c63d2f"/>
 
   <!-- card 3: suggestion -->
-  <rect x="915" y="290" width="360" height="210" rx="12" fill="#fbf9f4" stroke="#161616" stroke-width="3"/>
-  <rect x="915" y="290" width="360" height="58" rx="12" fill="#c63d2f"/>
-  <rect x="915" y="320" width="360" height="28" fill="#c63d2f"/>
-  <text x="940" y="329" font-size="26" fill="#fff">03 — suggestion</text>
-  <text x="940" y="408" font-size="27" font-weight="bold" fill="#c63d2f">/goal tests pass,</text>
-  <text x="940" y="446" font-size="27" font-weight="bold" fill="#c63d2f">stop after 20 turns</text>
+  <rect x="915" y="280" width="360" height="190" rx="12" fill="#fbf9f4" stroke="#161616" stroke-width="3"/>
+  <rect x="915" y="280" width="360" height="58" rx="12" fill="#c63d2f"/>
+  <rect x="915" y="310" width="360" height="28" fill="#c63d2f"/>
+  <text x="940" y="319" font-size="26" fill="#fff">suggestion</text>
+  <text x="940" y="395" font-size="27" font-weight="bold" fill="#c63d2f">/goal tests pass,</text>
+  <text x="940" y="433" font-size="27" font-weight="bold" fill="#c63d2f">stop after 20 turns</text>
 
-  <line x1="1280" y1="395" x2="1316" y2="395" stroke="#c63d2f" stroke-width="3.5"/>
-  <path d="M1324 395 l-17 -9 v18 z" fill="#c63d2f"/>
+  <line x1="1280" y1="375" x2="1316" y2="375" stroke="#c63d2f" stroke-width="3.5"/>
+  <path d="M1324 375 l-17 -9 v18 z" fill="#c63d2f"/>
 
   <!-- the loop -->
-  <circle cx="1432" cy="395" r="103" fill="none" stroke="#161616" stroke-width="3.5"/>
-  <polygon points="1432,284 1456,292 1432,300" fill="#161616"/>
-  <polygon points="1432,490 1408,498 1432,506" fill="#161616"/>
-  <text x="1432" y="385" font-size="28" fill="#161616" text-anchor="middle">fix ⇄</text>
-  <text x="1432" y="425" font-size="28" fill="#161616" text-anchor="middle">verify</text>
-  <text x="1432" y="545" font-size="22" fill="#777" text-anchor="middle">runs until green</text>
+  <circle cx="1432" cy="375" r="103" fill="none" stroke="#161616" stroke-width="3.5"/>
+  <polygon points="1432,264 1456,272 1432,280" fill="#161616"/>
+  <polygon points="1432,470 1408,478 1432,486" fill="#161616"/>
+  <text x="1432" y="365" font-size="28" fill="#161616" text-anchor="middle">fix ⇄</text>
+  <text x="1432" y="405" font-size="28" fill="#161616" text-anchor="middle">verify</text>
 
   <!-- footer -->
-  <line x1="85" y1="630" x2="1515" y2="630" stroke="#aaa" stroke-width="2.5"/>
-  <text x="800" y="690" font-size="26" fill="#333" text-anchor="middle">a hook that reminds you to use loops · so you don't need to remember any</text>
-  <text x="800" y="735" font-size="22" fill="#888" text-anchor="middle">claude code &amp; codex · never auto-runs · github.com/serenakeyitan/loopable</text>
+  <line x1="85" y1="580" x2="1515" y2="580" stroke="#aaa" stroke-width="2.5"/>
+  <text x="800" y="640" font-size="25" fill="#333" text-anchor="middle">a hook that reminds you to use loops · github.com/serenakeyitan/loopable</text>
 </svg>
