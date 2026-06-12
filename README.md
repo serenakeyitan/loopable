@@ -24,7 +24,7 @@ Claude Code already ships the commands that kill repetitive work: `/goal` keeps 
 
 A **hook** that delivers [RULES.md](RULES.md) — plain-language rules for judging when a moment is loop-shaped and what single command to offer — into each session's context. There is no keyword list and no matcher: the agent you're already talking to reads the rules and judges every message itself, so *"make it go green"*, *"the tests are flaky again"*, and a third *"run it again"* all count — any phrasing, any language.
 
-![you say something loop-shaped → loopable, a hook, injects RULES.md into the agent's context → claude offers the fitted /goal command](docs/media/what-is-loopable.svg)
+![flowchart: your prompt → loopable hook injects RULES.md into claude's context → claude judges loop-shaped? → no: normal reply / yes: claude offers the fitted /goal — you press enter, nothing runs by itself](docs/media/what-is-loopable.svg)
 
 ```
 you:     ugh, the tests keep flaking again
